@@ -1,5 +1,5 @@
 conexao.php
-.fotos
-.bootstrap
-.htmls
-.vendor
+.fotos/
+.bootstrap/
+.htmls/
+.vendor/
