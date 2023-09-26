@@ -92,6 +92,8 @@ $(document).ready(function(){
                         pagamento: text
                     };
 
+                    // console.log(arrayPost)
+
                     const requestOptions = {
                         method: 'POST',
                         headers: {

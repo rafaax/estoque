@@ -11,8 +11,9 @@ function logBanco($user, $id){
 
 $dados = json_decode(file_get_contents('php://input'), true);
 $json = json_encode($dados);
+// echo $json;
 if(isset($dados['pagamento'])){
-    $nome = $dados['fornecedor'];
+    $nome = $dados['pagamento'];
     $sql = "SELECT * from pagamentos where nome = '$nome'";
     $query = mysqli_query($conexao, $sql);
     $count = mysqli_num_rows($query);
@@ -42,4 +43,6 @@ if(isset($dados['pagamento'])){
             exit();
         }
     }
+}else{
+    print 'nao existem dados';
 }
