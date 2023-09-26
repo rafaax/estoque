@@ -59,3 +59,85 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
+<script>
+
+$(document).ready(function(){
+
+    load_data();
+	function load_data(query)
+    {
+        $.ajax({
+            url:"funcoes/pagamento/table.php",
+            method:"post",
+            data:{query:query},
+            success:function(data)
+            {
+                // renderizar a tabela e os elementos
+                $('#tabela_pagamentos').html(data); 
+                //
+            }
+        });
+    }
+    
+
+    $('.au-btn--small').on("click", function(){
+       Swal.fire({
+                title: 'Digite a nova forma de pagamento',
+                input: 'text',
+                showCancelButton: true,
+                confirmButtonText: 'Confirmar',
+                showLoaderOnConfirm: true,
+                preConfirm: (text) => {
+                    const arrayPost = {
+                        pagamento: text
+                    };
+
+                    const requestOptions = {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(arrayPost),
+                    };
+
+                    return fetch('funcoes/pagamento/cadastro.php', requestOptions)
+                    .then(response => {
+                        // Verificar se a resposta da solicitação é bem-sucedida (código de status 200)
+                        if (!response.ok) {
+                        throw new Error('A solicitação não foi bem-sucedida');
+                        }
+                        // Parse a resposta JSON
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Manipular os dados da resposta
+                        if(data.erro == false){
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Sucesso',
+                                text: 'Registro adicionado com sucesso!',
+                            })
+                            setTimeout(function() {
+                                location.reload();
+                            }, 1000)
+                        }else{
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Erro!',
+                                text: data.msg,
+                            })
+                        }
+                    })
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            })
+    });
+
+
+
+
+
+
+});
+
+</script>

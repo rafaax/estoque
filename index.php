@@ -141,7 +141,7 @@
                                         <a href="categorias"<button type="button" class="btn btn-outline-primary btn-lg btn-block">Categorias</button></a>
                                         <a href="solicitantes"<button type="button" class="btn btn-outline-primary btn-lg btn-block">Solicitantes</button></a>
                                         <a href="fornecedores"<button type="button" class="btn btn-outline-primary btn-lg btn-block">Fornecedores</button></a>
-                                        <button type="button" class="btn btn-outline-primary btn-lg btn-block">Formas de pagamento</button>
+                                        <a href="pgmt" <button type="button" class="btn btn-outline-primary btn-lg btn-block">Formas de pagamento</button></a>
                                     </div>
                                 </div>
                             </div>
