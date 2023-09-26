@@ -7,11 +7,27 @@
             <div class="menu-sidebar__content js-scrollbar1">
                 <nav class="navbar-sidebar">
                     <ul class="list-unstyled navbar__list">
-                        <li class="active has-sub">
+                        <li class="index">
                             <a class="js-arrow" href="index">
                                 <i class="fas fa-globe"></i>Tela inicial</a>
+                        </li>                        
+                        <li class="categorias">
+                            <a href="categorias">
+                                <i class="fas fa-folder"></i>Categorias</a>
                         </li>
-                        
+                        <li class="fornecedores">
+                            <a href="fornecedores">
+                                <i class="fas fa-building"></i>Fornecedores</a>
+                        </li>
+                        <li class="solicitantes">
+                            <a href="solicitantes">
+                                <i class="fas fa-user"></i>Solicitantes</a>
+                        </li>
+                         <li class="pagamentos">
+                            <a href="pagamento">
+                                <i class="fas fa-dollar-sign"></i>Formas de Pagamento</a>
+                        </li>
+        
                         <li class="has-sub">
                             <a class="js-arrow" href="#">
                                 <i class="fas fa-desktop"></i>UI Elements</a>
@@ -94,3 +110,25 @@
                 </nav>
             </div>
         </aside>
+
+
+        <script>
+            var currentPath = window.location.pathname;
+            var liIndex = document.getElementsByClassName('index')[0];
+            var liCategorias = document.getElementsByClassName('categorias')[0];
+            var liSolicitantes = document.getElementsByClassName('solicitantes')[0];
+            var liFornecedores = document.getElementsByClassName('fornecedores')[0];
+            var liPagamentos = document.getElementsByClassName('pagamentos')[0];
+            
+            if(currentPath === '/estoque_git/index'){
+                liIndex.classList.add('active');
+            }else if(currentPath === '/estoque_git/categorias'){
+                liCategorias.classList.add('active');
+            }else if(currentPath === '/estoque_git/solicitantes'){
+                liSolicitantes.classList.add('active');
+            }else if(currentPath === '/estoque_git/fornecedores'){
+                liFornecedores.classList.add('active');
+            }else if(currentPath === '/estoque_git/pagamento'){
+                liPagamentos.classList.add('active');
+            }
+        </script>
