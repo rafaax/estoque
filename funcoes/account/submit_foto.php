@@ -45,7 +45,7 @@ if(isset($_FILES['file-input'])){
     $query = mysqli_query($conexao, $sql);
 
     if($query){
-        move_uploaded_file($arquivo["tmp_name"], '../'.$path);
+        move_uploaded_file($arquivo["tmp_name"], '../../'.$path);
         echo json_encode(array(
             'erro'=> false
         ));

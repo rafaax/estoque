@@ -6,3 +6,5 @@ bootstrap/
 htmls/
 vendor/
 css/
+js/bootstrap-datetimepicker.js
+js/moment.js
