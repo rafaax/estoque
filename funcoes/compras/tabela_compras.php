@@ -1,21 +1,6 @@
 <?php include_once '../../conexao.php';?>
-<div class="row m-t-30">
-    <div class="col-md-12">
+
         <!-- DATA TABLE-->
-        <div class="table-data__tool">
-            <div class="table-data__tool-left">
-                <form class="form-header" action="" method="POST">
-                    <input class="au-input au-input--xl" type="text" name="search" placeholder="Procure uma compra" />
-                    <button class="au-btn--submit" type="submit">
-                        <i class="zmdi zmdi-search"></i>
-                    </button>
-                </form>
-            </div>
-            <div class="table-data__tool-right">
-                <button class="au-btn au-btn-icon au-btn--green au-btn--small">
-                    <i class="zmdi zmdi-plus"></i>adicionar uma compra</button>
-            </div>
-        </div>
         <div class="table-responsive m-b-40">
             <table class="table table-borderless table-data3">
                 <thead style="position: sticky; top: 0;">
@@ -25,12 +10,33 @@
                         <th>Data da Compra</th>
                         <th>Status</th>
                         <th>Preço total</th>
+                        <th></th>
                     </tr>
                 </thead> 
                 <tbody>
                     <?php 
                     
-                    $sql = "SELECT 
+                    if(isset($_POST["query"]))
+                    {
+                        $search = mysqli_real_escape_string($conexao, $_POST["query"]);
+                        $sql = "SELECT 
+                            e.id, e.nome, e.valor_unitario, e.frete, e.imposto, e.parcelas, e.quantidade, 
+                            e.site, e.descricao, e.data_compra, e.previsao_entrega, e.partnumber, 
+                            (SELECT nome FROM pagamentos WHERE id = e.pagamento_id ) AS pagamento_id, 
+                            (SELECT nome FROM categoria WHERE id = e.categoria_id) AS categoria_id, 
+                            (SELECT nome FROM fornecedor WHERE id = e.fornecedor_id) AS fornecedor_id, 
+                            (SELECT nome FROM integrantes WHERE id = e.solicitante_id) AS solicitante_id, 
+                            (SELECT nome FROM integrantes WHERE id = e.recebido_id) AS recebido_id,
+                            IFNULL((SELECT data_entrega FROM recebidos WHERE compra_id = e.id), 0) AS ifnullresult
+                            FROM compras e
+                            WHERE categoria_id = (SELECT id FROM categoria WHERE nome LIKE '%$search%' LIMIT 1)
+                            or  nome LIKE '%$search%' 
+                            OR partnumber LIKE '%$search%' order by data_compra desc
+                        ";
+                    }
+                    else
+                    {
+                        $sql = "SELECT 
                             e.id, e.nome, e.valor_unitario, e.frete, e.imposto, e.parcelas, e.quantidade, 
                             e.site, e.descricao, e.data_compra, e.previsao_entrega, e.partnumber, 
                             (SELECT nome FROM pagamentos WHERE id = e.pagamento_id ) AS pagamento_id, 
@@ -40,7 +46,11 @@
                             (SELECT nome FROM integrantes WHERE id = e.recebido_id) AS recebido_id,
                             IFNULL((SELECT data_entrega FROM recebidos WHERE compra_id = e.id), 0) AS ifnullresult
                             
-                            FROM compras e ";
+                            FROM compras e order by data_compra desc ";
+                    }
+                    
+                    
+                    
                     $query = mysqli_query($conexao, $sql);
 
                     while ($array = mysqli_fetch_array($query)) {
@@ -74,12 +84,21 @@
                             $status = 'Recebido';
                         }
                         
-                        echo "<tr class='table-row' data-toggle='modal' data-target='#myModal-$id'>";
-                            echo "<td> $nome </td>";
-                            echo "<td> $partnumber </td>";
-                            echo "<td> $data_compra </td>";
-                            echo "<td> $status </td>";
+                        echo "<tr class='table-row'>";
+                            echo "<td data-toggle='modal' data-target='#myModal-$id'> $nome </td>";
+                            echo "<td data-toggle='modal' data-target='#myModal-$id'> $partnumber </td>";
+                            echo "<td data-toggle='modal' data-target='#myModal-$id'> $data_compra </td>";
+                            echo "<td data-toggle='modal' data-target='#myModal-$id'> $status </td>";
                             echo '<td> R$'. number_format($preco_total, 2, ',', '.').'</td>';
+                            echo '<td>
+                                    <div class="table-data-feature">
+                                        <a href="compras?edit='.$id.'"> 
+                                            <button class="item" data-toggle="tooltip" data-placement="top" title="Edit">
+                                                <i class="zmdi zmdi-edit"></i>
+                                            </button>
+                                        </a>
+                                    </div>
+                                </td>';
                         echo "</tr>";
 
                         ?>
@@ -144,5 +163,27 @@
             </table>
         </div>
         <!-- END DATA TABLE-->
-    </div>
-</div>
+
+
+<script>
+
+    $('.au-btn--small').on("click", function(){
+        Swal.fire({
+            title: 'Alerta',
+            text: "Você deseja ir para o cadastro de compra?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sim'
+            }).then((result) => {
+            if (result.isConfirmed) {
+                setTimeout(function() {
+                    window.location.href = "compras?cadastro";
+                }, 200)
+                
+            }
+            })
+    });
+
+</script>

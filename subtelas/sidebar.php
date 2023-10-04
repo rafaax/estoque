@@ -120,7 +120,7 @@
             var liFornecedores = document.getElementsByClassName('fornecedores')[0];
             var liPagamentos = document.getElementsByClassName('pagamentos')[0];
             
-            if(currentPath === '/estoque_git/index'){
+            if(currentPath === '/estoque_git/index' || currentPath === '/estoque_git/index.php' || currentPath === '/estoque_git/'){
                 liIndex.classList.add('active');
             }else if(currentPath === '/estoque_git/categorias'){
                 liCategorias.classList.add('active');

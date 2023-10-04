@@ -31,6 +31,7 @@
     <link href="css/theme.css" rel="stylesheet" media="all">
 
 </head>
+
 <body class="animsition">
     <div class="page-wrapper">
         <?php require 'subtelas/header-mobile.php';
@@ -62,7 +63,25 @@
                         <div class="container-fluid">
                             <div class="row">    
                                 <div class="col-lg-12">
-                                    <div id="tabela_compras"></div>
+                                    <div class="row m-t-30">
+                                        <div class="col-md-12">
+                                            <div class="table-data__tool">
+                                                <div class="table-data__tool-left">
+                                                    <form class="form-header" action="" method="POST">
+                                                        <input class="au-input au-input--xl" type="text" name="search" placeholder="Procure uma compra" />
+                                                        <button class="au-btn--submit" type="submit">
+                                                            <i class="zmdi zmdi-search"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                                <div class="table-data__tool-right">
+                                                    <button class="au-btn au-btn-icon au-btn--green au-btn--small">
+                                                        <i class="zmdi zmdi-plus"></i>adicionar uma compra</button>
+                                                </div>
+                                            </div>
+                                            <div id="tabela_compras"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -86,24 +105,25 @@
 <script src="vendor/circle-progress/circle-progress.min.js"></script>
 <script src="vendor/perfect-scrollbar/perfect-scrollbar.js"></script>
 <script src="vendor/chartjs/Chart.bundle.min.js"></script>
-<script src="vendor/select2/select2.min.js">
-</script>
+<script src="vendor/select2/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="js/main.js"></script>
 
-<script>
+
+<script type="text/javascript">
     $(document).ready(function(){
 	
-    <?php if($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['cadastro'])){
-        ?>load_cadastro();<?php
-    }
-    else if($_SERVER['REQUEST_METHOD'] === 'GET'){
-        ?>load_compras();<?php 
-    }else if($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['edit'])){
-        ?>load_edit();<?php    
-    }?>
-    
+        <?php if($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['cadastro'])){
+            ?>load_cadastro();<?php
+        }
+        else if($_SERVER['REQUEST_METHOD'] === 'GET'){
+            ?>load_compras();<?php 
+        }else if($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['edit'])){
+            ?>load_edit();<?php    
+        }?>
 
-	function load_cadastro(query){
+        function load_cadastro(query)
+        {
             $.ajax(
                 {
                     url:"funcoes/compras/cadastro_compras.php",
@@ -120,41 +140,54 @@
         }
     
 
-    function load_compras(query)
+        function load_compras(query)
         {
-                $.ajax(
+            $.ajax(
+                {
+                    url:"funcoes/compras/tabela_compras.php",
+                    method:"post",
+                    data:{query:query},
+                    success:function(data)
                     {
-                        url:"funcoes/compras/tabela_compras.php",
-                        method:"post",
-                        data:{query:query},
-                        success:function(data)
-                        {
-                            // renderizar a tabela e os elementos
-                            $('#tabela_compras').html(data); 
-                            //
-                        }
+                        console.log(data);
+                        // renderizar a tabela e os elementos
+                        $('#tabela_compras').html(data); 
+                        //
                     }
-                );
-            
+                }
+            );
         }
     
-    function load_edit(query)
-        {
-                $.ajax(
-                    {
-                        url:"funcoes/compras/edit_compra.php",
-                        method:"post",
-                        data:{query:query},
-                        success:function(data)
+        function load_edit(query)
+            {
+                    $.ajax(
                         {
-                            // renderizar a tabela e os elementos
-                            $('#edit_compra').html(data); 
-                            //
+                            url:"funcoes/compras/edit_compra.php",
+                            method:"post",
+                            data:{query:query},
+                            success:function(data)
+                            {
+                                // renderizar a tabela e os elementos
+                                $('#edit_compra').html(data); 
+                                //
+                            }
                         }
-                    }
-                );
-            
-        }
-    });
+                    );
+                
+            }
+
+            $('.au-input--xl').on('keyup', function() {
+                var search = $(this).val();
+                
+                if(search != '')
+                {
+                    load_compras(search);
+                }
+                else
+                {
+                    load_compras();			
+                }
+            }); 
+        });
 </script>
 
