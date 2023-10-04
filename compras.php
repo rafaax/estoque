@@ -67,12 +67,12 @@
                                         <div class="col-md-12">
                                             <div class="table-data__tool">
                                                 <div class="table-data__tool-left">
-                                                    <form class="form-header" action="" method="POST">
-                                                        <input class="au-input au-input--xl" type="text" name="search" placeholder="Procure uma compra" />
-                                                        <button class="au-btn--submit" type="submit">
-                                                            <i class="zmdi zmdi-search"></i>
+                                                    <div class="form-header">
+                                                        <input class="au-input au-input--xl" type="text" name="search" id="searchCompras" placeholder="Procure uma compra" />
+                                                        <button class="au-btn--submit" id="buttonClear">
+                                                            <i class="zmdi zmdi-close"></i>
                                                         </button>
-                                                    </form>
+                                                    </div>
                                                 </div>
                                                 <div class="table-data__tool-right">
                                                     <button class="au-btn au-btn-icon au-btn--green au-btn--small">
@@ -108,7 +108,8 @@
 <script src="vendor/select2/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="js/main.js"></script>
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.min.js"></script>  
 
 <script type="text/javascript">
     $(document).ready(function(){
@@ -187,7 +188,16 @@
                 {
                     load_compras();			
                 }
-            }); 
-        });
+                
+            });
+
+            $('#buttonClear').on('click', function() {
+                    $('#searchCompras').val('');
+                    load_compras();	
+            });
+
+
+            
+    });
 </script>
 

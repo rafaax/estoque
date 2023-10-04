@@ -148,10 +148,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <!-- <button class="btn btn-warning btn-vis-edit">Editar</button> -->
-                                        <button class="btn btn-danger btn-delete" onclick="deletaCompra('<?=$id?>', '<?=$nome?>')">Deletar</button>
-                                        <button class="btn btn-warning btn-vis-edit" onclick="editaCompra('<?=$id?>')">Editar</button>
-                                        <button type="button" class="btn btn-primary btn-canc-edit" data-dismiss="modal">Cancelar</button>
-                                        
+                                        <button type="button" class="btn btn-primary btn-canc-edit" data-dismiss="modal">Voltar</button>
                                         <!-- <button type="button" class="btn btn-primary">Confirm</button> -->
                                     </div>
                                 </div>

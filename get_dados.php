@@ -3,7 +3,7 @@ session_start();
 include_once 'conexao.php';
 
 if ($_SESSION["usuario"] == "" || $_SESSION["usuario"] == null) {
-    header("Location: http://127.0.0.1/estoque/login.php");
+    header("Location: http://127.0.0.1/estoque_git/login.php");
 }
 $userSession = $_SESSION["usuario"];
 $sql = "SELECT * FROM usuario WHERE id = $userSession  AND status = 1";

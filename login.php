@@ -12,7 +12,7 @@ if (isset($_COOKIE['auth_token'])) {
         if($auth_token === $_COOKIE['auth_token']){
             session_start();
             $_SESSION['usuario'] = $array['id'];
-            header("Location: https://127.0.0.1/estoque/");
+            header("Location: https://127.0.0.1/estoque_git/");
             die();
         }
     }
@@ -33,7 +33,7 @@ if (isset($_COOKIE['auth_token'])) {
 <div id="particles-js">
     <div class="container tamanho-largura">
         <div class="d-flex justify-content-center">
-            <img src="assets/img/Logo-Vetorian-Simbolo-Color.png" width="125px" height="125px" alt="Vetorian">
+            <img src="img/Logo-Vetorian-Simbolo-Color.png" width="125px" height="125px" alt="Vetorian">
         </div>
         <form id="login" method="POST">
             <div class="form-group">
@@ -85,7 +85,7 @@ if (isset($_COOKIE['auth_token'])) {
                     })
                 }
                 else if(resposta.erro == false) {
-                    window.location.href = "http://127.0.0.1/estoque/"
+                    window.location.href = "http://127.0.0.1/estoque_git/"
                 }
             }
         })
