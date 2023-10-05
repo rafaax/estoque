@@ -54,7 +54,19 @@
                 </div>';
         }else if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['edit'])) {
             $id = $_GET['edit'];
-
+            echo $id;
+            echo '
+            
+            <div class="main-content">
+                <div class="section__content section__content--p30">    
+                    <div class="container-fluid">
+                        <div class="row">    
+                            <div class="col-lg-9">
+                                <div id="edit_compra"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>';
 
         }else if ($_SERVER['REQUEST_METHOD'] === 'GET'){
             echo '
@@ -115,14 +127,14 @@
     $(document).ready(function(){
 	
         <?php if($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['cadastro'])){
-            ?>load_cadastro();<?php
+            ?> load_cadastro();<?php
         }
-        else if($_SERVER['REQUEST_METHOD'] === 'GET'){
-            ?>load_compras();<?php 
-        }else if($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['edit'])){
-            ?>load_edit();<?php    
+        else if($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['edit'])){
+            ?> load_edit(<?=$_GET['edit']?>);<?php    
+        }else if($_SERVER['REQUEST_METHOD'] === 'GET'){
+            ?> load_compras();<?php 
         }?>
-
+        
         function load_cadastro(query)
         {
             $.ajax(
@@ -150,7 +162,6 @@
                     data:{query:query},
                     success:function(data)
                     {
-                        console.log(data);
                         // renderizar a tabela e os elementos
                         $('#tabela_compras').html(data); 
                         //
@@ -161,20 +172,20 @@
     
         function load_edit(query)
             {
-                    $.ajax(
+                console.log(query);
+                $.ajax(
+                    {
+                        url:"funcoes/compras/edit_compra.php",
+                        method:"post",
+                        data:{id:query},
+                        success:function(data)
                         {
-                            url:"funcoes/compras/edit_compra.php",
-                            method:"post",
-                            data:{query:query},
-                            success:function(data)
-                            {
-                                // renderizar a tabela e os elementos
-                                $('#edit_compra').html(data); 
-                                //
-                            }
+                            // renderizar a tabela e os elementos
+                            $('#edit_compra').html(data); 
+                            //
                         }
-                    );
-                
+                    }
+                );
             }
 
             $('.au-input--xl').on('keyup', function() {

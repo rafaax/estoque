@@ -15,20 +15,20 @@ require '../../conexao.php';
 <div class="card">
     <div class="card-header">Cadastro de Compra</div>
     <div class="card-body">
-        <form  method="post">
+        <form id="form_cadastro" method="post">
             <div class="row">
                 <div class="col-6">
                     <div class="form-group">
                         <label for="nome_produto" class="control-label mb-1">Nome Produto</label>
                         <input id="nome_produto" name="nome_produto" class="form-control"
-                        type="text" aria-required="true" aria-invalid="false" placeholder="Nome do produto">
+                        type="text" aria-required="true" aria-invalid="false" placeholder="Nome do produto" required>
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="form-group">
                         <label for="partnumber_produto" class="control-label mb-1">PartNumber</label>
                         <input id="partnumber_produto" name="partnumber_produto" type="text" class="form-control"
-                        aria-required="true" aria-invalid="false" placeholder="PartNumber do produto"> 
+                        aria-required="true" aria-invalid="false" placeholder="PartNumber do produto" required> 
                     </div>
                 </div>
             </div>
@@ -37,7 +37,7 @@ require '../../conexao.php';
                     <div class="form-group">
                         <label for="quantidade" class="control-label mb-1">Quantidade</label>
                         <input id="quantidade" name="quantidade" class="form-control"
-                        type="number" aria-required="true" aria-invalid="false" min="1" placeholder="Quantidade">
+                        type="number" aria-required="true" aria-invalid="false" min="1" placeholder="Quantidade" required>
                     </div>
                 </div>
                 <div class="col-6">
@@ -149,7 +149,7 @@ require '../../conexao.php';
             <div class="form-group">
                 <label for="preco_unitario" class="control-label mb-1">Preço unitário</label>
                 <input id="preco_unitario" name="preco_unitario" type="number" class="form-control" min="0"
-                placeholder="Digite o preço unitário do produto">
+                placeholder="Digite o preço unitário do produto" required>
             </div>
 
 
@@ -185,7 +185,7 @@ require '../../conexao.php';
                 <div class="col-6">
                     <div class="form-group">
                         <label for="data_compra" class="control-label mb-1">Data de Compra</label>
-                        <input id="data_compra" name="data_compra" type="date" class="form-control">
+                        <input id="data_compra" name="data_compra" type="date" class="form-control" required>
                     </div>
                 </div>
                 <div class="col-6">
@@ -246,6 +246,65 @@ $(document).ready(function(){
         }else{
             y.style.display = 'none';
         }
+    });
+
+    $('#form_cadastro').on("submit", function(event){
+        event.preventDefault();
+
+        $.ajax({
+            method: "POST",
+            url: "funcoes/compras/backend_cadastro.php",
+            data: new FormData(this),
+            contentType: false,
+            processData: false,
+            beforeSend: function () {
+                Swal.fire({
+                    title: 'Aguarde...',
+                    text: 'Cadastrando evento...',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    showConfirmButton: false,
+                    willOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+            },
+            success: function (retorna) {
+                console.log(retorna);
+                Swal.close();
+                // if(retorna['sucessful']){
+                //     Swal.fire({
+                //         title: 'Evento cadastrado!',
+                //         html: 'A página se auto-reiniciará em 5 segundos.',
+                //         icon: 'success',
+                //         didOpen: () => {
+                //             Swal.showLoading()
+                //         },
+                //     })
+                //     setTimeout(function() {
+                //         location.reload();
+                //     }, 5000)
+                // }
+                // if(retorna['warning']){
+                //     Swal.fire({
+                //         icon: 'warning',
+                //         title: 'Atenção!',
+                //         text: 'Evento cadastrado porem temos poucos rastreadores no estoque!',
+                //         didOpen: () => {
+                //             Swal.showLoading()
+                //         },
+                //     })
+                //     setTimeout(function() {
+                //         location.reload();
+                //     }, 5000)
+                // }
+                // if (retorna['sit']) {
+                //     $("#msg-cad").html(retorna['msg']);
+                // } else {
+                //     $("#msg-cad").html(retorna['msg']);
+                // }
+            }
+        })
     });
 
 })
