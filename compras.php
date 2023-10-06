@@ -205,10 +205,19 @@
             $('#buttonClear').on('click', function() {
                     $('#searchCompras').val('');
                     load_compras();	
-            });
-
-
-            
+            });            
     });
+</script>
+<script>
+    const tabela = document.querySelector("#tabela_compras");
+
+    const listarUsuarios = async (pagina) => {
+        const dados = await fetch("funcoes/compras/tabela_compras.php?pagina=" + pagina);
+        const resposta = await dados.text();
+        tabela.innerHTML = resposta;
+    }
+
+    listarUsuarios(1);
+
 </script>
 

@@ -1,8 +1,11 @@
 <?php include_once '../../conexao.php';?>
 
+
+
+
         <!-- DATA TABLE-->
-        <div class="table-responsive m-b-40">
-            <table class="table table-borderless table-data3">
+        <div class="table-responsive m-b-40"> 
+            <table class="table table-borderless table-data3" id="tabela_compras" >
                 <thead style="position: sticky; top: 0;">
                     <tr>
                         <th>Nome</th>
@@ -46,7 +49,7 @@
                             (SELECT nome FROM integrantes WHERE id = e.recebido_id) AS recebido_id,
                             IFNULL((SELECT data_entrega FROM recebidos WHERE compra_id = e.id), 0) AS ifnullresult
                             
-                            FROM compras e order by data_compra desc ";
+                            FROM compras e order by data_compra desc limit $inicio, $quantidade_por_pagina ";
                     }
                     
                     
@@ -158,6 +161,40 @@
                 ?>
                 </tbody>
             </table>
+            <?php
+            $pagina = filter_input(INPUT_GET, "pagina", FILTER_SANITIZE_NUMBER_INT);
+            if($pagina == null){
+                $pagina = 1;
+            }
+            $quantidade_por_pagina = 5;
+            $inicio = ($pagina * $quantidade_por_pagina) - $quantidade_por_pagina;
+            $query_pg = "SELECT COUNT(id) AS num_result FROM compras";
+            $result_pg = mysqli_query($conexao, $query_pg);
+            $row_pg = mysqli_fetch_assoc($result_pg);
+
+            $quantidade_pg = ceil($row_pg['num_result'] / $quantidade_por_pagina);
+            $max_links = 2;
+            ?>
+
+            <nav aria-label="Page navigation example"><ul class="pagination pagination-bg justify-content-center">
+            <li class="page-item"><a href="#" class="page-link" onclick="listarUsuarios(1)">Primeira</a></li>
+            <?php 
+            for($pag_ant = $pagina - $max_links; $pag_ant <= $pagina - 1; $pag_ant++){
+                if($pag_ant >= 1){
+                    echo "<li class='page-item'><a class='page-link' href='#' onclick='listarUsuarios($pag_ant)' >$pag_ant</a></li>";
+                }        
+            }
+            
+            echo "<li class='page-item active'><a class='page-link' href='#'>$pagina</a></li>";
+
+            for($pag_dep = $pagina + 1; $pag_dep <= $pagina + $max_links; $pag_dep++){
+                if($pag_dep <= $quantidade_pg){
+                    echo "<li class='page-item'><a class='page-link' href='#' onclick='listarUsuarios($pag_dep)'>$pag_dep</a></li>";
+                }        
+            }
+
+            echo "<li class='page-item'><a class='page-link' href='#' onclick='listarUsuarios($quantidade_pg)'>Última</a></li>";
+            echo '</ul></nav>';?>
         </div>
         <!-- END DATA TABLE-->
 
