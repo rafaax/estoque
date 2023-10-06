@@ -122,13 +122,13 @@
             
             if(currentPath === '/estoque_git/index' || currentPath === '/estoque_git/index.php' || currentPath === '/estoque_git/'){
                 liIndex.classList.add('active');
-            }else if(currentPath === '/estoque_git/categorias'){
+            }else if(currentPath === '/estoque_git/categorias' || currentPath === '/estoque_git/categorias.php' ){
                 liCategorias.classList.add('active');
-            }else if(currentPath === '/estoque_git/solicitantes'){
+            }else if(currentPath === '/estoque_git/solicitantes' || currentPath === '/estoque_git/solicitantes.php'){
                 liSolicitantes.classList.add('active');
-            }else if(currentPath === '/estoque_git/fornecedores'){
+            }else if(currentPath === '/estoque_git/fornecedores' || currentPath === '/estoque_git/fornecedores.php'){
                 liFornecedores.classList.add('active');
-            }else if(currentPath === '/estoque_git/pagamento'){
+            }else if(currentPath === '/estoque_git/pagamento' || currentPath === '/estoque_git/pagamento.php'){
                 liPagamentos.classList.add('active');
             }
         </script>

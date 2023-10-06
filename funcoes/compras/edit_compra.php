@@ -248,7 +248,7 @@ $id =  $_POST['id'];
             
             <div>
                 <button id="payment-button" type="submit" class="btn btn-lg btn-info btn-block">
-                    <span>Cadastrar</span>
+                    <span>Editar</span>
                     <i class="zmdi zmdi-check"></i>&nbsp;
                 </button>
             </div>

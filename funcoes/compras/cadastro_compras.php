@@ -148,7 +148,7 @@ require '../../conexao.php';
             
             <div class="form-group">
                 <label for="preco_unitario" class="control-label mb-1">Preço unitário</label>
-                <input id="preco_unitario" name="preco_unitario" type="number" class="form-control" min="0"
+                <input id="preco_unitario" name="preco_unitario" type="text" class="form-control" min="0"
                 placeholder="Digite o preço unitário do produto" required>
             </div>
 
@@ -248,6 +248,16 @@ $(document).ready(function(){
         }
     });
 
+    $('#preco_unitario').on('input', function(){
+
+        var text = $(this).val();
+        var newText = text.replace(/[^0-9,]/g, '');
+
+        
+        $(this).val(newText);
+
+    })
+
     $('#form_cadastro').on("submit", function(event){
         event.preventDefault();
 
@@ -269,40 +279,23 @@ $(document).ready(function(){
                     }
                 });
             },
-            success: function (retorna) {
-                console.log(retorna);
+            success: function (result) {
+                var json = JSON.parse(result);
+                console.log(json);
                 Swal.close();
-                // if(retorna['sucessful']){
-                //     Swal.fire({
-                //         title: 'Evento cadastrado!',
-                //         html: 'A página se auto-reiniciará em 5 segundos.',
-                //         icon: 'success',
-                //         didOpen: () => {
-                //             Swal.showLoading()
-                //         },
-                //     })
-                //     setTimeout(function() {
-                //         location.reload();
-                //     }, 5000)
-                // }
-                // if(retorna['warning']){
-                //     Swal.fire({
-                //         icon: 'warning',
-                //         title: 'Atenção!',
-                //         text: 'Evento cadastrado porem temos poucos rastreadores no estoque!',
-                //         didOpen: () => {
-                //             Swal.showLoading()
-                //         },
-                //     })
-                //     setTimeout(function() {
-                //         location.reload();
-                //     }, 5000)
-                // }
-                // if (retorna['sit']) {
-                //     $("#msg-cad").html(retorna['msg']);
-                // } else {
-                //     $("#msg-cad").html(retorna['msg']);
-                // }
+                if(json.erro == false){
+                    Swal.fire({
+                        title: 'Compra cadastrada!',
+                        html: 'A página se auto-reiniciará em 5 segundos.',
+                        icon: 'success',
+                        didOpen: () => {
+                            Swal.showLoading()
+                        },
+                    })
+                    setTimeout(function() {
+                        window.location.href = "http://127.0.0.1/estoque_git/compras"
+                    }, 5000)
+                }
             }
         })
     });
