@@ -85,6 +85,7 @@ $inicio = ($pagina * $quantidade_por_pagina) - $quantidade_por_pagina;
             
             
             
+            
             $query = mysqli_query($conexao, $sql);
 
             while ($array = mysqli_fetch_array($query)) {
@@ -111,11 +112,15 @@ $inicio = ($pagina * $quantidade_por_pagina) - $quantidade_por_pagina;
 
                 $preco_total = ($valor_un * $quantidade) + $frete + $imposto;
                 
+
                 if(strtotime(date('Y-m-d')) > strtotime($previsao_entrega) && $entregue == 0){
                     $status = 'Atrasado';
+                }else if(strtotime(date('Y-m-d')) < strtotime($previsao_entrega) && $entregue == 0){
+                    $status = 'Ainda não entregue';
                 }else{
                     $status = 'Recebido';
                 }
+               
                 
                 echo "<tr class='table-row'>";
                     echo "<td data-toggle='modal' data-target='#myModal-$id'> $nome </td>";
@@ -123,18 +128,27 @@ $inicio = ($pagina * $quantidade_por_pagina) - $quantidade_por_pagina;
                     echo "<td data-toggle='modal' data-target='#myModal-$id'> $data_compra </td>";
                     echo "<td data-toggle='modal' data-target='#myModal-$id'> $status </td>";
                     echo '<td> R$'. number_format($preco_total, 2, ',', '.').'</td>';
-                    echo '<td>
+                    ?><td>
                             <div class="table-data-feature">
-                                <a href="compras?edit='.$id.'"> 
+                                <a href="compras?edit=<?=$id?>"> 
                                     <button class="item" data-toggle="tooltip" data-placement="top" title="Edit">
                                         <i class="zmdi zmdi-edit"></i>
                                     </button>
                                 </a>
-                                <button class="item" data-toggle="tooltip" data-placement="top" title="Delete">
+
+                                <a href="compras?nota=<?=$id?>">
+                                    <button class="item" data-toggle="tooltip" data-placement="top" title="Inserir nota fiscal">
+                                        <i class="zmdi zmdi-archive"></i>
+                                    </button>
+                                </a>
+
+                                <button class="item" data-toggle="tooltip" data-placement="top" 
+                                onclick="deletaCompra('<?=$id?>', '<?=trim($nome)?>')" title="Delete">
                                     <i class="zmdi zmdi-delete"></i>
                                 </button>
                             </div>
-                        </td>';
+                        </td>
+                        <?php 
                 echo "</tr>";
 
                 ?>
@@ -181,6 +195,25 @@ $inicio = ($pagina * $quantidade_por_pagina) - $quantidade_por_pagina;
                                     <label class="col-sm-2 col-form-label"><strong>Descrição:</strong></label>
                                     <?=$descricao?>
                                 </div>
+                                <div class="event-info">
+                                    <label class="col-sm-2 col-form-label"><strong>Nota Fiscal:</strong></label>
+                                    <?php 
+                                    $sqlNota = "SELECT path from notas_fiscais where compra_id = $id  ";
+                                    $queryNota = mysqli_query($conexao, $sqlNota);
+                                    $resultNota = mysqli_fetch_assoc($queryNota);
+                                    $resultNotaQnt = mysqli_num_rows($queryNota);
+                                    
+                                    if($resultNotaQnt >= 1 ){
+                                        $path_nota = $resultNota['path'];
+                                        echo '<a target="_blank" href="'. $path_nota. '">
+                                        <input type="submit" value="NF" onclick="valida('.$path_nota. ');">
+                                        </a>';
+                                    }else{
+                                        $path_nota = '';
+                                        echo "<input type='submit' value='NF' onclick='valida($path_nota)'>";
+                                    }?>
+                                </div>
+                                
                             </div>
                             <div class="modal-footer">
                                 <!-- <button class="btn btn-warning btn-vis-edit">Editar</button> -->
@@ -229,23 +262,60 @@ $inicio = ($pagina * $quantidade_por_pagina) - $quantidade_por_pagina;
 </div>
 
 <script>
-    $('.au-btn--small').on("click", function(){
-        Swal.fire({
-            title: 'Alerta',
-            text: "Você deseja ir para o cadastro de compra?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Sim'
-            }).then((result) => {
-            if (result.isConfirmed) {
-                setTimeout(function() {
-                    window.location.href = "compras?cadastro";
-                }, 200)
-                
-            }
-            })
-    });
+    function deletaCompra(id, nome){
+            Swal.fire
+            (
+                {
+                    title: 'Voce deseja deletar a compra ' + nome + '?',
+                    showDenyButton: true,
+                    confirmButtonText: 'Sim',
+                    denyButtonText: `Não`,
+                }
+            ).then(
+                (result) => {
+                if (result.isConfirmed) {
+                    const arrayPost = {
+                            id: id
+                        };
+                    const requestOptions = 
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(arrayPost),
+                    };
+                    console.log(arrayPost);
+                    return fetch('funcoes/compras/delete_compra.php', requestOptions)
+                    .then(response => {
+                            
+                            if (!response.ok) {
+                            throw new Error('A solicitação não foi bem-sucedida');
+                            }
+                            
+                            return response.json();
+                        })
+                        .then(data => {
+                            console.log(data);
+                            if(data.erro == false){
+                                Swal.fire('Você apagou o registro.', '', 'success')
+                                setTimeout(function() {
+                                    location.reload();
+                                }, 1000)
+                            }else{
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Erro!',
+                                    text: data.msg,
+                                })
+                            }
+                        })
+                } else if (result.isDenied) {
+                    Swal.fire('Registro não deletado!', '', 'info')
+                }
+                }
+            )
+    };
 
+    
 </script>

@@ -54,7 +54,6 @@
                 </div>';
         }else if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['edit'])) {
             $id = $_GET['edit'];
-            echo $id;
             echo '
             
             <div class="main-content">
@@ -68,6 +67,51 @@
                     </div>
                 </div>';
 
+        }else if($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['nota'])){
+        
+        echo '
+
+            <div class="main-content">
+                <div class="section__content section__content--p30">    
+                    <div class="container-fluid">
+                        <div class="row">    
+                            <div class="col-lg-9">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                    </div>
+                                    <div class="col-lg-6">
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="card">
+                                            
+                                            <div class="card-header">
+                                                Insira a <strong>NOTA FISCAL</strong>
+                                            </div>
+                                            <div class="card-body card-block">
+                                                <form id="insert_nf" method="post" enctype="multipart/form-data" class="form-horizontal">
+                                                    <div class="row form-group">
+                                                        <div class="col col-md-3">
+                                                            <label for="file-input" class=" form-control-label">Insira a NF</label>
+                                                        </div>
+                                                        <div class="col-12 col-md-9">
+                                                            <input type="file" id="file-input" name="file-input" class="form-control-file">
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                            <div class="card-footer">
+                                                <button type="submit" class="btn btn-primary btn-sm">
+                                                    <i class="fa fa-dot-circle-o"></i> Confirmar
+                                                </button>
+                                            </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>';
+        
         }else if ($_SERVER['REQUEST_METHOD'] === 'GET'){
             echo '
                 <div class="main-content">
@@ -124,6 +168,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.min.js"></script>  
 
 <script type="text/javascript">
+
     $(document).ready(function(){
 	
         <?php if($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['cadastro'])){
@@ -131,6 +176,8 @@
         }
         else if($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['edit'])){
             ?> load_edit(<?=$_GET['edit']?>);<?php    
+        }else if($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['nota'])){
+            ?> <?php
         }else if($_SERVER['REQUEST_METHOD'] === 'GET'){
             ?> load_compras();<?php 
         }?>
@@ -171,22 +218,21 @@
         }
     
         function load_edit(query)
-            {
-                console.log(query);
-                $.ajax(
+        {
+            $.ajax(
+                {
+                    url:"funcoes/compras/edit_compra.php",
+                    method:"post",
+                    data:{id:query},
+                    success:function(data)
                     {
-                        url:"funcoes/compras/edit_compra.php",
-                        method:"post",
-                        data:{id:query},
-                        success:function(data)
-                        {
-                            // renderizar a tabela e os elementos
-                            $('#edit_compra').html(data); 
-                            //
-                        }
+                        // renderizar a tabela e os elementos
+                        $('#edit_compra').html(data); 
+                        //
                     }
-                );
-            }
+                }
+            );
+        }
 
             $('.au-input--xl').on('keyup', function() {
                 var search = $(this).val();
@@ -205,19 +251,110 @@
             $('#buttonClear').on('click', function() {
                     $('#searchCompras').val('');
                     load_compras();	
-            });            
+            });   
+
+            $('.au-btn--small').on("click", function(){
+                Swal.fire({
+                    title: 'Alerta',
+                    text: "Você deseja ir para o cadastro de compra?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sim'
+                    }).then((result) => {
+                    if (result.isConfirmed) {
+                        setTimeout(function() {
+                            window.location.href = "compras?cadastro";
+                        }, 200)
+                        
+                    }
+                })
+            });
+
+
+            $("#insert_nf").on("submit", function (event) {
+                event.preventDefault();
+                $.ajax({
+                    method: "POST",
+                    url: "funcoes/compras/insert_nota.php?id=<?=$_GET['nota']?>",
+                    data: new FormData(this),
+                    contentType: false,
+                    processData: false,
+                    success: function (json) {
+                        console.log(json);
+                        var resposta = JSON.parse(json);
+                
+                        if(resposta.erro == true && resposta.msg == 'erro generico') {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Erro!',
+                                text: 'Selecione um arquivo!'
+                            }) 
+                        }else if(resposta.erro == true && resposta.msg == 'size'){
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Erro!',
+                                text: 'Arquivo muito pesado, selecione uma foto menor!'
+                            })
+                        }else if(resposta.erro == true && resposta.msg == 'tipo'){
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Erro!',
+                                text: 'Tipo de arquivo não permitido, escolha entre jpg, jpeg, png, pdf, xls ou xlsx!'
+                            })
+                        }else if(resposta.erro == true && resposta.msg == 'query'){
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Erro!',
+                                text: 'Aconteceu algum erro em atualizar sua foto, tente novamente'
+                            })
+                        }else if(resposta.erro == true && resposta.msg == 'content_length'){
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Erro!',
+                                text: 'O arquivo que você enviou é muito pesado para o sistema!'
+                            })
+                        }else if(resposta.erro == false){
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Sucesso',
+                                text: 'Nota fiscal atrelada!'
+                            })
+                            setTimeout(function() {
+                                location.reload();
+                                }, 1000)
+                        }
+                    }
+                })
+            });
     });
 </script>
 <script>
-    const tabela = document.querySelector("#tabela_compras");
+    <?php if(!isset($_GET['cadastro']) && !isset($_GET['edit']) && !isset($_GET['nota'])){
+        ?>
+        const tabela = document.querySelector("#tabela_compras");
 
-    const listarUsuarios = async (pagina) => {
-        const dados = await fetch("funcoes/compras/tabela_compras.php?pagina=" + pagina);
-        const resposta = await dados.text();
-        tabela.innerHTML = resposta;
+        const listarUsuarios = async (pagina) => {
+            const dados = await fetch("funcoes/compras/tabela_compras.php?pagina=" + pagina);
+            const resposta = await dados.text();
+            tabela.innerHTML = resposta;
+        }
+
+        listarUsuarios(1);
+    <?php } ?>
+
+function valida(path){
+        if(path == undefined){
+            // alert('Não foi inserido nota fiscal!');
+            Swal.fire({
+                title: 'Erro!',
+                text: 'Não foi inserido nota fiscal',
+                icon: 'error',
+                confirmButtonText: 'Ok'
+            })
+        }
     }
-
-    listarUsuarios(1);
 
 </script>
 
