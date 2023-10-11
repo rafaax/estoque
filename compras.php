@@ -272,62 +272,67 @@
                 })
             });
 
-
-            $("#insert_nf").on("submit", function (event) {
-                event.preventDefault();
-                $.ajax({
-                    method: "POST",
-                    url: "funcoes/compras/insert_nota.php?id=<?=$_GET['nota']?>",
-                    data: new FormData(this),
-                    contentType: false,
-                    processData: false,
-                    success: function (json) {
-                        console.log(json);
-                        var resposta = JSON.parse(json);
-                
-                        if(resposta.erro == true && resposta.msg == 'erro generico') {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Erro!',
-                                text: 'Selecione um arquivo!'
-                            }) 
-                        }else if(resposta.erro == true && resposta.msg == 'size'){
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Erro!',
-                                text: 'Arquivo muito pesado, selecione uma foto menor!'
-                            })
-                        }else if(resposta.erro == true && resposta.msg == 'tipo'){
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Erro!',
-                                text: 'Tipo de arquivo não permitido, escolha entre jpg, jpeg, png, pdf, xls ou xlsx!'
-                            })
-                        }else if(resposta.erro == true && resposta.msg == 'query'){
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Erro!',
-                                text: 'Aconteceu algum erro em atualizar sua foto, tente novamente'
-                            })
-                        }else if(resposta.erro == true && resposta.msg == 'content_length'){
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Erro!',
-                                text: 'O arquivo que você enviou é muito pesado para o sistema!'
-                            })
-                        }else if(resposta.erro == false){
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Sucesso',
-                                text: 'Nota fiscal atrelada!'
-                            })
-                            setTimeout(function() {
-                                location.reload();
-                                }, 1000)
+            <?php if(isset($_GET['nota'])){
+                ?>
+            
+                $("#insert_nf").on("submit", function (event) {
+                    event.preventDefault();
+                    $.ajax({
+                        method: "POST",
+                        url: "funcoes/compras/insert_nota.php?id=<?=$_GET['nota']?>",
+                        data: new FormData(this),
+                        contentType: false,
+                        processData: false,
+                        success: function (json) {
+                            console.log(json);
+                            var resposta = JSON.parse(json);
+                    
+                            if(resposta.erro == true && resposta.msg == 'erro generico') {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Erro!',
+                                    text: 'Selecione um arquivo!'
+                                }) 
+                            }else if(resposta.erro == true && resposta.msg == 'size'){
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Erro!',
+                                    text: 'Arquivo muito pesado, selecione uma foto menor!'
+                                })
+                            }else if(resposta.erro == true && resposta.msg == 'tipo'){
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Erro!',
+                                    text: 'Tipo de arquivo não permitido, escolha entre jpg, jpeg, png, pdf, xls ou xlsx!'
+                                })
+                            }else if(resposta.erro == true && resposta.msg == 'query'){
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Erro!',
+                                    text: 'Aconteceu algum erro em atualizar sua foto, tente novamente'
+                                })
+                            }else if(resposta.erro == true && resposta.msg == 'content_length'){
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Erro!',
+                                    text: 'O arquivo que você enviou é muito pesado para o sistema!'
+                                })
+                            }else if(resposta.erro == false){
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Sucesso',
+                                    text: 'Nota fiscal atrelada!'
+                                })
+                                setTimeout(function() {
+                                    location.reload();
+                                    }, 1000)
+                            }
                         }
-                    }
-                })
-            });
+                    })
+                });
+            <?php } ?>
+
+            
     });
 </script>
 <script>
@@ -342,11 +347,65 @@
         }
 
         listarUsuarios(1);
+
+        function deletaCompra(id, nome){
+            Swal.fire
+            (
+                {
+                    title: 'Voce deseja deletar a compra ' + nome + '?',
+                    showDenyButton: true,
+                    confirmButtonText: 'Sim',
+                    denyButtonText: `Não`,
+                }
+            ).then(
+                (result) => {
+                if (result.isConfirmed) {
+                    const arrayPost = {
+                            id: id
+                        };
+                    const requestOptions = 
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(arrayPost),
+                    };
+                    console.log(arrayPost);
+                    return fetch('funcoes/compras/delete_compra.php', requestOptions)
+                    .then(response => {
+                            
+                            if (!response.ok) {
+                            throw new Error('A solicitação não foi bem-sucedida');
+                            }
+                            
+                            return response.json();
+                        })
+                        .then(data => {
+                            console.log(data);
+                            if(data.erro == false){
+                                Swal.fire('Você apagou o registro.', '', 'success')
+                                setTimeout(function() {
+                                    location.reload();
+                                }, 1000)
+                            }else{
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Erro!',
+                                    text: data.msg,
+                                })
+                            }
+                        })
+                } else if (result.isDenied) {
+                    Swal.fire('Registro não deletado!', '', 'info')
+                }
+                }
+            )
+    };
     <?php } ?>
 
 function valida(path){
         if(path == undefined){
-            // alert('Não foi inserido nota fiscal!');
             Swal.fire({
                 title: 'Erro!',
                 text: 'Não foi inserido nota fiscal',
