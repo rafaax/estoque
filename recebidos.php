@@ -53,40 +53,6 @@
                 </div>';
         }?>
 
-        <script type="text/javascript">
-
-    $(document).ready(function(){
-	
-        <?php if($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['cadastro'])){
-            ?><?php
-        }
-        else if($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['edit'])){
-            ?><?php    
-        }else if($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['nota'])){
-            ?><?php
-        }else if($_SERVER['REQUEST_METHOD'] === 'GET'){
-            ?> load_table();<?php 
-        }?>
-        
-        function load_table(query)
-        {
-            $.ajax(
-                {
-                    url:"funcoes/recebidos/tabela_recebidos.php",
-                    method:"post",
-                    data:{query:query},
-                    success:function(data)
-                    {
-                        // renderizar a tabela e os elementos
-                        $('#tabela_recebidos').html(data); 
-                        //
-                    }
-                }
-            );
-        }        
-    });
-</script>
-
 
         </div>
     </div>
@@ -111,3 +77,38 @@
 <script src="js/main.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.min.js"></script>  
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+	
+        <?php if($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['cadastro'])){
+            ?><?php
+        }
+        else if($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['edit'])){
+            ?><?php    
+        }else if($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['nota'])){
+            ?><?php
+        }else if($_SERVER['REQUEST_METHOD'] === 'GET'){
+            ?> load_table();<?php 
+        }?>
+        
+        function load_table(query)
+        {
+            $.ajax(
+                {
+                    url:"funcoes/recebidos/tabela_recebidos.php",
+                    method:"post",
+                    data:{query:query},
+                    success:function(data)
+                    {
+                        console.log(data);
+                        // renderizar a tabela e os elementos
+                        $('#tabela_recebidos').html(data); 
+                        //
+                    }
+                }
+            );
+        }        
+    });
+</script>
