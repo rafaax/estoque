@@ -82,6 +82,8 @@ $inicio = ($pagina * $quantidade_por_pagina) - $quantidade_por_pagina;
                     
                     FROM compras e order by data_compra desc limit $inicio, $quantidade_por_pagina ";
             }
+
+            // echo $sql;
             
             
             
@@ -112,21 +114,34 @@ $inicio = ($pagina * $quantidade_por_pagina) - $quantidade_por_pagina;
 
                 $preco_total = ($valor_un * $quantidade) + $frete + $imposto;
                 
-
-                if(strtotime(date('Y-m-d')) > strtotime($previsao_entrega) && $entregue == 0){
-                    $status = 'Atrasado';
-                }else if(strtotime(date('Y-m-d')) < strtotime($previsao_entrega) && $entregue == 0){
-                    $status = 'Ainda não entregue';
+                if($previsao_entrega != '0000-00-00'){
+                    if(strtotime(date('Y-m-d')) > strtotime($previsao_entrega) && $entregue == 0){
+                        $status = 'Atrasado';
+                    }else if(strtotime(date('Y-m-d')) < strtotime($previsao_entrega) && $entregue == 0){
+                        $status = 'Ainda não entregue';
+                    }else{
+                        $status = 'Recebido';
+                    }
                 }else{
-                    $status = 'Recebido';
+                    if($entregue == 0){
+                        $status = 'Ainda não entregue';
+                    }else{
+                        $status = 'Recebido';    
+                    }
                 }
+                
                
                 
                 echo "<tr class='table-row'>";
                     echo "<td data-toggle='modal' data-target='#myModal-$id'> $nome </td>";
                     echo "<td data-toggle='modal' data-target='#myModal-$id'> $partnumber </td>";
                     echo "<td data-toggle='modal' data-target='#myModal-$id'> $data_compra </td>";
-                    echo "<td data-toggle='modal' data-target='#myModal-$id'> $status </td>";
+                    if($status == 'Ainda não entregue' || $status == 'Atrasado'){
+                        echo "<td class='bg-danger text-white' data-toggle='modal' data-target='#myModal-$id'> $status </td>";    
+                    }else{
+                        echo "<td data-toggle='modal' data-target='#myModal-$id'> $status </td>";
+                    }
+                    
                     echo '<td> R$'. number_format($preco_total, 2, ',', '.').'</td>';
                     ?><td>
                             <div class="table-data-feature">
