@@ -137,7 +137,7 @@
             }
             else
             {
-                load_compras();			
+                load_table();			
             }
                 
         });
@@ -158,6 +158,63 @@
         }
 
         listarRegistros(1);
+
+        function deletaCompra(id, nome){
+            Swal.fire
+            (
+                {
+                    title: 'Voce deseja deletar a compra ' + nome + '?',
+                    showDenyButton: true,
+                    confirmButtonText: 'Sim',
+                    denyButtonText: `Não`,
+                }
+            ).then(
+                (result) => {
+                    if (result.isConfirmed) {
+                        const arrayPost = {
+                                id: id
+                            };
+                        const requestOptions = 
+                        {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(arrayPost),
+                        };
+                        console.log(arrayPost);
+                        return fetch('funcoes/compras/delete_compra.php', requestOptions)
+                        .then(response => {
+                                
+                                if (!response.ok) {
+                                throw new Error('A solicitação não foi bem-sucedida');
+                                }
+                                
+                                return response.json();
+                            })
+                            .then(data => {
+                                console.log(data);
+                                if(data.erro == false){
+                                    Swal.fire('Você apagou o registro.', '', 'success')
+                                    setTimeout(function() {
+                                        location.reload();
+                                    }, 1000)
+                                }else{
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Erro!',
+                                        text: data.msg,
+                                    })
+                                }
+                            })
+
+                    } else if (result.isDenied) {
+                        Swal.fire('Registro não deletado!', '', 'info')
+                    }
+                }
+            )
+        };
+
 
 
 </script>

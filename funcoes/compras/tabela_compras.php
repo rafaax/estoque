@@ -83,10 +83,6 @@ $inicio = ($pagina * $quantidade_por_pagina) - $quantidade_por_pagina;
                     FROM compras e order by data_compra desc limit $inicio, $quantidade_por_pagina ";
             }
 
-            // echo $sql;
-            
-            
-            
             
             $query = mysqli_query($conexao, $sql);
 
@@ -129,8 +125,6 @@ $inicio = ($pagina * $quantidade_por_pagina) - $quantidade_por_pagina;
                         $status = 'Recebido';    
                     }
                 }
-                
-               
                 
                 echo "<tr class='table-row'>";
                     echo "<td data-toggle='modal' data-target='#myModal-$id'> $nome </td>";
@@ -184,11 +178,17 @@ $inicio = ($pagina * $quantidade_por_pagina) - $quantidade_por_pagina;
                                 </div>
                                 <div class="event-info">
                                     <label class="col-sm-2 col-form-label"><strong>Data da Compra:</strong></label>
-                                    <?php echo date('d/m/Y',strtotime($data_compra))?>
+                                    <?php echo $data_compra?>
                                 </div>
                                 <div class="event-info">
                                     <label class="col-sm-2 col-form-label"><strong>Previsão Entrega:</strong></label>
-                                    <?php echo date('d/m/Y',strtotime($previsao_entrega))?>
+                                    <?php
+                                    
+                                    if($previsao_entrega == '0000-00-00'){
+                                        echo 'Não foi inserido uma previsão de entrega';
+                                    }else{
+                                        echo date('d/m/Y',strtotime($previsao_entrega));
+                                    } ?>
                                 </div>
                                 <div class="event-info">
                                     <label class="col-sm-2 col-form-label"><strong>Forma de Pagamento:</strong></label>
@@ -204,11 +204,25 @@ $inicio = ($pagina * $quantidade_por_pagina) - $quantidade_por_pagina;
                                 </div>
                                 <div class="event-info">
                                     <label class="col-sm-2 col-form-label"><strong>Recebido:</strong></label>
-                                    <?=$recebido?>
+                                    <?php
+                                    
+                                    if($recebido == NULL){
+                                        echo 'Produto ainda não foi recebido';
+                                    }else{
+                                        echo $recebido;
+                                    }
+                                    
+                                    ?>
                                 </div>
                                 <div class="event-info">
                                     <label class="col-sm-2 col-form-label"><strong>Descrição:</strong></label>
-                                    <?=$descricao?>
+                                    <?php 
+                                    if($descricao == NULL){
+                                        echo 'Não foi inserido descrição para esta compra.';
+                                    }else{
+                                        echo $descricao;
+                                    }
+                                    ?>
                                 </div>
                                 <div class="event-info">
                                     <label class="col-sm-2 col-form-label"><strong>Nota Fiscal:</strong></label>

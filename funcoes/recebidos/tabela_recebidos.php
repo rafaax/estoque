@@ -65,9 +65,7 @@ $inicio = ($pagina * $quantidade_por_pagina) - $quantidade_por_pagina;
                     ON c.id = r.compra_id 
                 ORDER BY c.data_compra DESC limit $inicio, $quantidade_por_pagina ";
             }
-            
-            
-            
+                        
             
             $query = mysqli_query($conexao, $sql);
 

@@ -241,7 +241,13 @@ $id =  $_POST['id'];
                 <div class="col-6">
                     <div class="form-group">
                         <label for="previsao_entrega" class="control-label mb-1">Previsão de entrega</label>
-                        <input id="previsao_entrega" name="previsao_entrega" type="date" class="form-control" value="<?=$previsao_entrega?>">
+                        <?php 
+                        if($previsao_entrega != '0000-00-00'){
+                            echo "<input id='previsao_entrega' name='previsao_entrega' type='date' class='form-control' value='$previsao_entrega'>";
+                        }else{
+                            echo "<input id='previsao_entrega' name='previsao_entrega' type='date' class='form-control'>";
+                        }
+                        ?>
                     </div>
                 </div>
             </div>
@@ -302,60 +308,29 @@ $(document).ready(function(){
 
     $('#form_edit').on("submit", function(event){
         event.preventDefault();
-        // $.ajax({
-        //     method: "POST",
-        //     url: "funcoes/cad_event.php",
-        //     data: new FormData(this),
-        //     contentType: false,
-        //     processData: false,
-        //     beforeSend: function () {
-        //         Swal.fire({
-        //             title: 'Aguarde...',
-        //             text: 'Cadastrando evento...',
-        //             allowOutsideClick: false,
-        //             allowEscapeKey: false,
-        //             showConfirmButton: false,
-        //             willOpen: () => {
-        //                 Swal.showLoading();
-        //             }
-        //         });
-        //     },
-        //     success: function (retorna) {
-        //         console.log(retorna);
-        //         Swal.close();
-        //         if(retorna['sucessful']){
-        //             Swal.fire({
-        //                 title: 'Evento cadastrado!',
-        //                 html: 'A página se auto-reiniciará em 5 segundos.',
-        //                 icon: 'success',
-        //                 didOpen: () => {
-        //                     Swal.showLoading()
-        //                 },
-        //             })
-        //             setTimeout(function() {
-        //                 location.reload();
-        //             }, 5000)
-        //         }
-        //         if(retorna['warning']){
-        //             Swal.fire({
-        //                 icon: 'warning',
-        //                 title: 'Atenção!',
-        //                 text: 'Evento cadastrado porem temos poucos rastreadores no estoque!',
-        //                 didOpen: () => {
-        //                     Swal.showLoading()
-        //                 },
-        //             })
-        //             setTimeout(function() {
-        //                 location.reload();
-        //             }, 5000)
-        //         }
-        //         if (retorna['sit']) {
-        //             $("#msg-cad").html(retorna['msg']);
-        //         } else {
-        //             $("#msg-cad").html(retorna['msg']);
-        //         }
-        //     }
-        // })
+        $.ajax({
+            method: "POST",
+            url: "funcoes/compras/backend_edit.php",
+            data: new FormData(this),
+            contentType: false,
+            processData: false,
+            beforeSend: function () {
+                Swal.fire({
+                    title: 'Aguarde...',
+                    text: 'Editando evento...',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    showConfirmButton: false,
+                    willOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+            },
+            success: function (retorna) {
+                console.log(retorna);
+                // Swal.close();
+            }
+        })
     });
 
 })
