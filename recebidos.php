@@ -39,38 +39,49 @@
         <?php require 'subtelas/header.php';?>
         
         <?php
-        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-        echo '
+        if($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['edit'])){
+
+        $id = $_GET['edit'];
+            echo '
                 <div class="main-content">
                     <div class="section__content section__content--p30">    
                         <div class="container-fluid">
                             <div class="row">    
-                                <div class="col-lg-12">
-                                    <div class="row m-t-30">
-                                        <div class="col-md-12">
-                                            <div class="table-data__tool">
-                                                <div class="table-data__tool-left">
-                                                    <div class="form-header">
-                                                        <input class="au-input au-input--xl" type="text" name="search" id="searchRegistro" placeholder="Procure uma compra" />
-                                                        <button class="au-btn--submit" id="buttonClear">
-                                                            <i class="zmdi zmdi-close"></i>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                                <div class="table-data__tool-right">
-                                                    <button class="au-btn au-btn-icon au-btn--green au-btn--small">
-                                                        <i class="zmdi zmdi-plus"></i>adicionar uma compra</button>
+                                <div class="col-lg-9">
+                                    <div id="edit_recebido"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>';    
+        }else if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+        echo '
+            <div class="main-content">
+                <div class="section__content section__content--p30">    
+                    <div class="container-fluid">
+                        <div class="row">    
+                            <div class="col-lg-12">
+                                <div class="row m-t-30">
+                                    <div class="col-md-12">
+                                        <div class="table-data__tool">
+                                            <div class="table-data__tool-left">
+                                                <div class="form-header">
+                                                    <input class="au-input au-input--xl" type="text" name="search" id="searchRegistro" placeholder="Procure uma compra" />
+                                                    <button class="au-btn--submit" id="buttonClear">
+                                                        <i class="zmdi zmdi-close"></i>
+                                                    </button>
                                                 </div>
                                             </div>
-                                            <div id="tabela_recebidos"></div>
                                         </div>
+                                        <div id="tabela_recebidos"></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>';
-        }?>
-
+                    </div>
+                </div>';
+        }
+        
+        ?>
 
         </div>
     </div>
@@ -104,13 +115,30 @@
             ?><?php
         }
         else if($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['edit'])){
-            ?><?php    
+            ?>load_edit(<?=$_GET['edit']?>);<?php    
         }else if($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['nota'])){
             ?><?php
         }else if($_SERVER['REQUEST_METHOD'] === 'GET'){
             ?> load_table();<?php 
         }?>
         
+        function load_edit(query){
+
+            $.ajax(
+                {
+                    url: "funcoes/recebidos/tela_edit.php",
+                    method: "post",
+                    data: {id:query},
+                    success: function(data)
+                    {
+                        console.log(data);
+                        $('#edit_recebido').html(data);
+                    }
+                }
+            )
+        }
+
+
         function load_table(query)
         {
             $.ajax(
@@ -149,6 +177,8 @@
     });
 </script>
 <script>
+    <?php if(!isset($_GET['cadastro']) && !isset($_GET['edit']) && !isset($_GET['nota'])){
+    ?>
     const tabela = document.querySelector("#tabela_recebidos");
 
         const listarRegistros = async (pagina) => {
@@ -214,6 +244,7 @@
                 }
             )
         };
+    <?php } ?>
 
 
 
