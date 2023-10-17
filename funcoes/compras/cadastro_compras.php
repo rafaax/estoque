@@ -188,12 +188,14 @@ require '../../conexao.php';
                         <input id="data_compra" name="data_compra" type="date" class="form-control" required>
                     </div>
                 </div>
-                <div class="col-6">
-                    <div class="form-group">
-                        <label for="previsao_entrega" class="control-label mb-1">Previsão de entrega</label>
-                        <input id="previsao_entrega" name="previsao_entrega" type="date" class="form-control">
+                    <div class="col-6">
+                        <div id="previsao-entrega" class="ifpagamento_remoto">
+                            <div class="form-group">
+                                <label for="previsao_entrega" class="control-label mb-1">Previsão de entrega</label>
+                                <input id="previsao_entrega" name="previsao_entrega" type="date" class="form-control">
+                            </div>
+                        </div>
                     </div>
-                </div>
             </div>
             
             <div>
@@ -239,12 +241,15 @@ $(document).ready(function(){
 
     $('#pagamento_formato').on('change', function() {
         var y = document.getElementById('div-frete-imposto');
+        var x = document.getElementById('previsao-entrega');
         var valor = this.value;
         console.log(valor);
         if(valor == 'pagamento_remoto'){
             y.style.display = 'block';
+            x.style.display = 'block';
         }else{
             y.style.display = 'none';
+            x.style.display = 'none';
         }
     });
 
@@ -280,13 +285,13 @@ $(document).ready(function(){
                 });
             },
             success: function (result) {
+                console.log(result);
                 var json = JSON.parse(result);
-                console.log(json);
                 Swal.close();
                 if(json.erro == false){
                     Swal.fire({
                         title: 'Compra cadastrada!',
-                        html: 'A página se auto-reiniciará em 5 segundos.',
+                        html: 'A página se auto-reiniciará em 3 segundos.',
                         icon: 'success',
                         didOpen: () => {
                             Swal.showLoading()
@@ -294,7 +299,7 @@ $(document).ready(function(){
                     })
                     setTimeout(function() {
                         window.location.href = "http://127.0.0.1/estoque_git/compras"
-                    }, 5000)
+                    }, 3000)
                 }
             }
         })
