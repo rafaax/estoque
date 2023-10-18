@@ -94,7 +94,8 @@ function validaFormato($tipo){
 if($_SERVER['REQUEST_METHOD'] == 'POST' ){
     $dados = filter_input_array(INPUT_POST, FILTER_DEFAULT);
     $json = json_encode($dados);
-    file_put_contents('dados.json', $json);
+    // file_put_contents('dados.json', $json);
+    
     if(@$json){
 
         $nome_produto = $dados['nome_produto']; 

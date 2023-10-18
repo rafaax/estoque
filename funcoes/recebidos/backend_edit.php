@@ -27,7 +27,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' ){
     
     $dados = filter_input_array(INPUT_POST, FILTER_DEFAULT);
     $json = json_encode($dados);
-    file_put_contents('dados_edit.json', $json);
+    // file_put_contents('dados_edit.json', $json);
 
     if(@$json){
     
@@ -39,6 +39,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' ){
                         'erro' => 'data',
                         'msg' => 'Data da entrega não pode ser maior que a data de hoje!'
                     ));
+                    // parar o arquivo após o print
                     die();
             }
             
@@ -102,5 +103,4 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' ){
 
         }
     }
-
 }
