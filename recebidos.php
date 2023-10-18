@@ -111,10 +111,7 @@
 
     $(document).ready(function(){
 	
-        <?php if($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['cadastro'])){
-            ?><?php
-        }
-        else if($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['edit'])){
+        <?php if($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['edit'])){
             ?>load_edit(<?=$_GET['edit']?>);<?php    
         }else if($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['nota'])){
             ?><?php
