@@ -1,6 +1,6 @@
 <aside class="menu-sidebar d-none d-lg-block">
             <div class="logo">
-                <a href="index.php">
+                <a href="index">
                     <img src="images/icon/Logo-Vetorian-Horizontal-Color.png" alt="vetorian" />
                 </a>
             </div>

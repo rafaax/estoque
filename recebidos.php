@@ -26,6 +26,8 @@
     <link href="vendor/slick/slick.css" rel="stylesheet" media="all">
     <link href="vendor/select2/select2.min.css" rel="stylesheet" media="all">
     <link href="vendor/perfect-scrollbar/perfect-scrollbar.css" rel="stylesheet" media="all">
+    <!-- animation do sweetalert-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
     <!-- Main CSS-->
     <link href="css/theme.css" rel="stylesheet" media="all">
@@ -128,7 +130,6 @@
                     data: {id:query},
                     success: function(data)
                     {
-                        console.log(data);
                         $('#edit_recebido').html(data);
                     }
                 }
@@ -186,61 +187,6 @@
 
         listarRegistros(1);
 
-        function deletaCompra(id, nome){
-            Swal.fire
-            (
-                {
-                    title: 'Voce deseja deletar a compra ' + nome + '?',
-                    showDenyButton: true,
-                    confirmButtonText: 'Sim',
-                    denyButtonText: `Não`,
-                }
-            ).then(
-                (result) => {
-                    if (result.isConfirmed) {
-                        const arrayPost = {
-                                id: id
-                            };
-                        const requestOptions = 
-                        {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify(arrayPost),
-                        };
-                        console.log(arrayPost);
-                        return fetch('funcoes/compras/delete_compra.php', requestOptions)
-                        .then(response => {
-                                
-                                if (!response.ok) {
-                                throw new Error('A solicitação não foi bem-sucedida');
-                                }
-                                
-                                return response.json();
-                            })
-                            .then(data => {
-                                console.log(data);
-                                if(data.erro == false){
-                                    Swal.fire('Você apagou o registro.', '', 'success')
-                                    setTimeout(function() {
-                                        location.reload();
-                                    }, 1000)
-                                }else{
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Erro!',
-                                        text: data.msg,
-                                    })
-                                }
-                            })
-
-                    } else if (result.isDenied) {
-                        Swal.fire('Registro não deletado!', '', 'info')
-                    }
-                }
-            )
-        };
     <?php } ?>
 
 

@@ -98,10 +98,6 @@ $inicio = ($pagina * $quantidade_por_pagina) - $quantidade_por_pagina;
                                   <i class="zmdi zmdi-edit"></i>
                               </button>
                           </a>
-                          <button class="item" data-toggle="tooltip" data-placement="top" 
-                          onclick="deletaCompra('<?=$id?>', '<?=trim($nome)?>')" title="Delete">
-                              <i class="zmdi zmdi-delete"></i>
-                          </button>
                       </div>
                     </td>
                     <?php 
