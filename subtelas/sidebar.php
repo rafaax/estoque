@@ -10,7 +10,27 @@
                         <li class="index">
                             <a class="js-arrow" href="index">
                                 <i class="fas fa-globe"></i>Tela inicial</a>
-                        </li>                        
+                        </li>
+                        <li class="compras">
+                            <a href="compras">
+                                <i class="fas fa-shopping-bag"></i> Compras
+                            </a>
+                        </li>
+                        <li class="recebidos">
+                            <a href="recebidos">
+                                <i class="fas fa-truck"></i>Recebimento
+                            </a>
+                        </li>
+                        <li class="estoque">
+                            <a href="estoque">
+                                <i class="fas fa-box"></i> Estoque
+                            </a>
+                        </li>
+                        <li class="retirada">
+                            <a href="retirada">
+                                <i class="fas fa-sign-in-alt"></i> Retirada
+                            </a>
+                        </li>
                         <li class="categorias">
                             <a href="categorias">
                                 <i class="fas fa-folder"></i>Categorias</a>
@@ -119,6 +139,10 @@
             var liSolicitantes = document.getElementsByClassName('solicitantes')[0];
             var liFornecedores = document.getElementsByClassName('fornecedores')[0];
             var liPagamentos = document.getElementsByClassName('pagamentos')[0];
+            var liCompras = document.getElementsByClassName('compras')[0];
+            var liRecebidos = document.getElementsByClassName('recebidos')[0];
+            var liEstoque = document.getElementsByClassName('estoque')[0];
+            var liRetirada = document.getElementsByClassName('retirada')[0];
             
             if(currentPath === '/estoque_git/index' || currentPath === '/estoque_git/index.php' || currentPath === '/estoque_git/'){
                 liIndex.classList.add('active');
@@ -130,5 +154,13 @@
                 liFornecedores.classList.add('active');
             }else if(currentPath === '/estoque_git/pagamento' || currentPath === '/estoque_git/pagamento.php'){
                 liPagamentos.classList.add('active');
+            }else if(currentPath === '/estoque_git/compras' || currentPath === '/estoque_git/compras.php'){
+                liCompras.classList.add('active');
+            }else if(currentPath === '/estoque_git/recebido' || currentPath === '/estoque_git/recebidos.php'){
+                liRecebidos.classList.add('active');
+            }else if(currentPath === '/estoque_git/estoque' || currentPath === '/estoque_git/estoque.php'){
+                liEstoque.classList.add('active');
+            }else if(currentPath === '/estoque_git/retirada' || currentPath === '/estoque_git/retirada.php'){
+                liRetirada.classList.add('active');
             }
         </script>
