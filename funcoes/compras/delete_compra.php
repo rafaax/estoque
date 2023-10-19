@@ -30,29 +30,40 @@ $json = json_encode($dados);
 if(isset($dados['id'])){
     $id = $dados['id'];
 
-    $sql = "DELETE from compras where id = $id";
-    $query = mysqli_query($conexao, $sql);
-    $id_recebido = buscaRecebidos($id);
-    $sql2 = "DELETE FROM recebidos where id = $id_recebido";
-    $query2 = mysqli_query($conexao, $sql2);
+    $sqlEstoque = "SELECT * from estoque where compra_id = $id";
+    $queryEstoque = mysqli_query($conexao, $sql);
 
-    if($query && $query2){
-        echo json_encode(array(
-            'erro' => false
-        ));
+    if(mysqli_num_rows($queryEstoque) == 0){
+        $sql = "DELETE from compras where id = $id";
+        $query = mysqli_query($conexao, $sql);
+
+        $id_recebido = buscaRecebidos($id);
+        
+        $sql2 = "DELETE FROM recebidos where id = $id_recebido";
+        $query2 = mysqli_query($conexao, $sql2);
     
-        logBanco($userSession, $id);
-        logBanco2($userSession, $id_recebido);
+        if($query && $query2){
+            echo json_encode(array(
+                'erro' => false
+            ));
+        
+            logBanco($userSession, $id);
+            logBanco2($userSession, $id_recebido);
 
-        exit();
-
+            exit(); 
+        }else{
+            echo json_encode(array(
+                'erro' => true,
+                'msg' => 'Erro na query!'
+            ));
+            exit();
+        }   
     }else{
         echo json_encode(array(
-            'erro' => true,
-            'msg' => 'Erro na query!'
-        ));
+                'erro' => true,
+                'msg' => 'Você não pode deletar o registro que ja foi recebido!'
+            ));
         exit();
-    }   
-        
+    }  
 }
 

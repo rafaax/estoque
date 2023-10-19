@@ -32,6 +32,25 @@ function updateCompras($recebido_id, $compra_id){
     return $query ? true : false;
 }
 
+function insertEstoque($compra_id){
+    require '../../conexao.php';
+
+    $sql = "SELECT id from estoque where compra_id = $compra_id limit 1";
+    $query = mysqli_query($conexao, $sql);
+    if(mysqli_num_rows($query) < 1){
+        
+        $sql = "SELECT quantidade from compras where id = $compra_id";
+        $query = mysqli_query($conexao, $sql);
+        $array = mysqli_fetch_array($query);
+        $quantidade = $array['quantidade'];
+        
+        $sql = "INSERT INTO estoque(quantidade, compra_id) values ('$quantidade', '$compra_id')";
+        mysqli_query($conexao, $sql);
+        
+    }
+    
+}
+
 if($_SERVER['REQUEST_METHOD'] == 'POST' ){
     
     $dados = filter_input_array(INPUT_POST, FILTER_DEFAULT);
@@ -45,15 +64,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' ){
             $data_hoje = date("Y-m-d");
             if($data_hoje < $dados['data_entrega']){
                 echo json_encode(array(
-                        'erro' => 'data',
-                        'msg' => 'Data da entrega não pode ser maior que a data de hoje!'
-                    ));
-                    // parar o arquivo após o print
-                    die();
+                    'erro' => 'data',
+                    'msg' => 'Data da entrega não pode ser maior que a data de hoje!'
+                ));
+                die();
             }
 
-            
-            
             $recebido = $dados['recebido'];
             $data_entrega = $dados['data_entrega'];
             $id_produto = $dados['id_produto'];
@@ -85,6 +101,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' ){
                 
                 
                 if($query){
+                    insertEstoque($db_compra_id);
                     echo json_encode(array(
                         'erro' => false,
                         'msg' => 'Compra recebida com sucesso!'
@@ -104,6 +121,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' ){
                 if($query){
                     if(logBanco($userSession, $id_produto)){
                         updateCompras($recebido_id, $db_compra_id);
+                        insertEstoque($db_compra_id);
                         echo json_encode(array(
                             'erro' => false,
                             'msg' => 'Recebimento atualizado com sucesso!'

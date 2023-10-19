@@ -33,6 +33,24 @@
     <link href="css/theme.css" rel="stylesheet" media="all">
 
 </head>
+
+<style>
+.colored-toast.swal2-icon-success {
+  background-color: #a5dc86 !important;
+}
+
+.colored-toast .swal2-title {
+  color: white;
+}
+
+.colored-toast .swal2-close {
+  color: white;
+}
+
+.colored-toast .swal2-html-container {
+  color: white;
+}
+</style>
 <body class="animsition">
     <div class="page-wrapper">
         <?php require 'subtelas/header-mobile.php';
@@ -180,15 +198,26 @@
     ?>
     const tabela = document.querySelector("#tabela_recebidos");
 
-        const listarRegistros = async (pagina) => {
-            const dados = await fetch("funcoes/recebidos/tabela_recebidos.php?pagina=" + pagina);
-            const resposta = await dados.text();
-            tabela.innerHTML = resposta;
-        }
+    const listarRegistros = async (pagina) => {
+        const dados = await fetch("funcoes/recebidos/tabela_recebidos.php?pagina=" + pagina);
+        const resposta = await dados.text();
+        tabela.innerHTML = resposta;
+    }
 
-        listarRegistros(1);
+    listarRegistros(1);
 
     <?php } ?>
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-right',
+        iconColor: 'white',
+        customClass: {
+            popup: 'colored-toast'
+        },
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true
+    })
 
     function deletaRecebido(id){
         Swal.fire({
@@ -220,7 +249,11 @@
                         id:id
                     },
                     success:function(data){
-                        console.log(data);
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Recebimento cancelado.'
+                        })
+                        listarRegistros(1);
                     }
                 });
             }
