@@ -30,8 +30,8 @@ $json = json_encode($dados);
 if(isset($dados['id'])){
     $id = $dados['id'];
 
-    $sqlEstoque = "SELECT * from estoque where compra_id = $id";
-    $queryEstoque = mysqli_query($conexao, $sql);
+    $sqlEstoque = "SELECT * from estoque where compra_id = '$id'";
+    $queryEstoque = mysqli_query($conexao, $sqlEstoque);
 
     if(mysqli_num_rows($queryEstoque) == 0){
         $sql = "DELETE from compras where id = $id";
@@ -58,7 +58,7 @@ if(isset($dados['id'])){
             ));
             exit();
         }   
-    }else{
+    }else if(mysqli_num_rows($queryEstoque) > 0){
         echo json_encode(array(
                 'erro' => true,
                 'msg' => 'Você não pode deletar o registro que ja foi recebido!'

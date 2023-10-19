@@ -401,6 +401,7 @@
                                     location.reload();
                                 }, 1000)
                             }else{
+                                console.log(data);
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Erro!',
