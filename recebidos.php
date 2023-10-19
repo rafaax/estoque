@@ -120,6 +120,7 @@
         }else if($_SERVER['REQUEST_METHOD'] === 'GET'){
             ?> load_table();<?php 
         }?>
+
         
         function load_edit(query){
 
@@ -171,7 +172,7 @@
         $('#buttonClear').on('click', function() {
             $('#searchRegistro').val('');
             load_table();	
-        });        
+        });  
     });
 </script>
 <script>
@@ -189,6 +190,41 @@
 
     <?php } ?>
 
-
+    function deletaRecebido(id){
+        Swal.fire({
+            title: 'Alerta',
+            text: "Você deseja remover o recebimento?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sim',
+            cancelButtonText: 'Não!',
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url:"funcoes/recebidos/desvincular_recebimento.php",
+                    method:"post",
+                    data:{
+                        id:id
+                    },
+                    success:function(data){
+                        console.log(data);
+                    }
+                });
+            }
+        })
+    }
 
 </script>

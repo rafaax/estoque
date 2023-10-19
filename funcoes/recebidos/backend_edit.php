@@ -23,6 +23,15 @@ function logBanco($user,$target){
     return $query ? true : false;
 }
 
+function updateCompras($recebido_id, $compra_id){
+    require '../../conexao.php';
+
+    $sql = "UPDATE compras set recebido_id = '$recebido_id' where id = $compra_id ";
+    $query = mysqli_query($conexao, $sql);
+
+    return $query ? true : false;
+}
+
 if($_SERVER['REQUEST_METHOD'] == 'POST' ){
     
     $dados = filter_input_array(INPUT_POST, FILTER_DEFAULT);
@@ -42,6 +51,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' ){
                     // parar o arquivo após o print
                     die();
             }
+
+            
             
             $recebido = $dados['recebido'];
             $data_entrega = $dados['data_entrega'];
@@ -49,12 +60,23 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' ){
 
             $recebido_id = buscaRecebido($recebido) ;
 
-            $sql = "SELECT data_entrega, recebido_id from recebidos where id = $id_produto ";
+            $sql = "SELECT data_entrega, recebido_id, compra_id,
+            (select data_compra from compras where id = r.compra_id) as data_compra from recebidos r  where id = $id_produto ";
             $query = mysqli_query($conexao, $sql); 
             $array = mysqli_fetch_array($query);
 
             $db_data_entrega = $array['data_entrega'];
             $db_recebido_id = $array['recebido_id'];
+            $db_data_compra = $array['data_compra'];
+            $db_compra_id = $array['compra_id'];
+
+            if($dados['data_entrega'] < $db_data_compra){
+                echo json_encode(array(
+                    'erro' => 'data',
+                    'msg' => 'Data da entrega não pode ser anterior à data da compra!'
+                ));
+                die();
+            }
 
             if($db_data_entrega == null && $db_recebido_id == null){
 
@@ -81,6 +103,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' ){
 
                 if($query){
                     if(logBanco($userSession, $id_produto)){
+                        updateCompras($recebido_id, $db_compra_id);
                         echo json_encode(array(
                             'erro' => false,
                             'msg' => 'Recebimento atualizado com sucesso!'

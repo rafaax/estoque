@@ -71,34 +71,45 @@ $inicio = ($pagina * $quantidade_por_pagina) - $quantidade_por_pagina;
 
             while ($array = mysqli_fetch_array($query)) {
 
-              $id = $array['id'];
-              $nome = $array['nome'];
-              $partnumber = $array['partnumber'];
-              
-              $data_compra = date('d/m/Y',strtotime($array['data_compra']));
-              if($array['data_entrega'] != NULL){
-                $data_recebimento = date('d/m/y', strtotime($array['data_entrega']));
-                $recebido_id = $array['recebido'];
-              }else{
-                $data_recebimento = 'Não foi recebido ainda'; 
-                $recebido_id = 'Não foi recebido ainda';
-              }
+                $id = $array['id'];
+                $nome = $array['nome'];
+                $partnumber = $array['partnumber'];
+                
+                $data_compra = date('d/m/Y',strtotime($array['data_compra']));
+                if($array['data_entrega'] != NULL){
+                    $data_recebimento = date('d/m/y', strtotime($array['data_entrega']));
+                    $recebido_id = $array['recebido'];
+                    $unlinkRecebido = true ;
+                }else{
+                    $data_recebimento = 'Não foi recebido ainda'; 
+                    $recebido_id = 'Não foi recebido ainda';
+                    $unlinkRecebido = false ;
+                }
               
                 
-              echo "<tr class='table-row'>";
-                  echo "<td> $nome </td>";
-                  echo "<td> $data_compra </td>";
-                  echo "<td> $data_recebimento </td>";
-                  echo "<td> $recebido_id </td>";
-                  ?>
-                  <td>
-                      <div class="table-data-feature">
-                          <a href="recebidos?edit=<?=$id?>"> 
-                              <button class="item" data-toggle="tooltip" data-placement="top" title="Edit">
-                                  <i class="zmdi zmdi-edit"></i>
-                              </button>
-                          </a>
-                      </div>
+                echo "<tr class='table-row'>";
+                    echo "<td> $nome </td>";
+                    echo "<td> $data_compra </td>";
+                    echo "<td> $data_recebimento </td>";
+                    echo "<td> $recebido_id </td>";
+                    ?>
+                    <td>
+                        <div class="table-data-feature">
+                            <a href="recebidos?edit=<?=$id?>"> 
+                                <button class="item" data-toggle="tooltip" data-placement="top" title="Edit">
+                                    <i class="zmdi zmdi-edit"></i>
+                                </button>
+                            </a>
+                            <?php
+                            if($unlinkRecebido === true){
+                                ?><button class="item" data-toggle="tooltip" data-placement="top" title="Retirar Recebimento"onclick="deletaRecebido(<?=$id?>)">
+                                    <i class="zmdi zmdi-alert-triangle"></i>
+                                </button>
+                                <?php 
+                            }
+                            ?>
+                        </div>
+                        
                     </td>
                     <?php 
                 echo "</tr>";
