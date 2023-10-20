@@ -20,6 +20,7 @@
     <link href="vendor/bootstrap-4.1/bootstrap.min.css" rel="stylesheet" media="all">
 
     <!-- Vendor CSS-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link href="vendor/animsition/animsition.min.css" rel="stylesheet" media="all">
     <link href="vendor/bootstrap-progressbar/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet" media="all">
     <link href="vendor/wow/animate.css" rel="stylesheet" media="all">
@@ -50,8 +51,26 @@
             <?php if($_SERVER['REQUEST_METHOD'] == 'GET'){
                 echo '<div class="main-content">
                     <div class="section__content section__content--p30">
-                        <div class="container-fluid">
-                            <div id="tabela_estoque">
+                        <div class="container-fluid"><div class="row">
+                            <div class="col-md-12">
+                                <h3 class="title-5 m-b-35"></h3>
+                                <div class="table-data__tool">
+                                    <div class="table-data__tool-left">
+                                        <div class="form-header">
+                                            <input class="au-input au-input--xl" type="text" name="search" id="searchEstoque" placeholder="Procure uma compra" />
+                                            <button class="au-btn--submit" id="buttonClear">
+                                                <i class="zmdi zmdi-close"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="table-data__tool-right">
+                                        <button class="au-btn au-btn-icon au-btn--green au-btn--small">
+                                            <i class="zmdi zmdi-open-in-new"></i>EXPORTAR PARA EXCEL
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="tabela_estoque"></div>
+                            </div>
                         </div>
                     </div>
                 </div>';
@@ -76,9 +95,11 @@
     <script src="vendor/circle-progress/circle-progress.min.js"></script>
     <script src="vendor/perfect-scrollbar/perfect-scrollbar.js"></script>
     <script src="vendor/chartjs/Chart.bundle.min.js"></script>
-    <script src="vendor/select2/select2.min.js">
-    </script>
+    <script src="vendor/select2/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="js/main.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.min.js"></script>  
 
 </body>
 </html>
@@ -105,7 +126,7 @@
                 }
             });
         }
-
+        
         $('.au-input--xl').on('keyup', function() {
             var search = $(this).val();
             
@@ -118,6 +139,11 @@
             }
             
         });
+
+        $('#buttonClear').on('click', function() {
+            $('#searchEstoque').val('');
+            load_table();	
+        });   
 
 
 
