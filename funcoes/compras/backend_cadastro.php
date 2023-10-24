@@ -97,7 +97,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' ){
     // file_put_contents('dados.json', $json);
     
     if(@$json){
-
+        
         $nome_produto = $dados['nome_produto']; 
         $partnumber_produto = $dados['partnumber_produto'];
         $quantidade = $dados['quantidade'];
@@ -115,6 +115,15 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' ){
         $descricao = $dados['descricao']; 
         $data_compra = $dados['data_compra']; 
         $previsao_entrega = $dados['previsao_entrega'];
+        $data_hoje = date('Y-m-d');
+        if($data_hoje < $data_compra ){
+            echo json_encode(array(
+                'erro' => true,
+                'msg' => 'Data da compra não pode ser maior que a data de hoje!'
+            ));
+            die();
+        }
+
 
 
         $pagamento_formato = validaFormato($pagamento_formato);

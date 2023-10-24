@@ -300,6 +300,22 @@ $(document).ready(function(){
                     setTimeout(function() {
                         window.location.href = "http://127.0.0.1/estoque_git/compras"
                     }, 3000)
+                }else if(json.erro == true){
+                    Swal.fire({
+                        title: json.msg,
+                        icon: 'error',
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            return false
+                        }
+                    })
                 }
             }
         })

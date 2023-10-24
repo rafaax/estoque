@@ -21,7 +21,8 @@ $id =  $_POST['id'];
 
     $sql = "SELECT id, partnumber, data_entrega, 
     (SELECT nome FROM integrantes WHERE id = e.recebido_id LIMIT 1) as recebido_id,
-    (SELECT nome FROM compras WHERE id = e.compra_id) AS nome
+    (SELECT nome FROM compras WHERE id = e.compra_id) AS nome,
+    (SELECT data_compra FROM compras WHERE id = e.compra_id) AS data_compra
         FROM recebidos e WHERE id = $id";
 
     $query = mysqli_query($conexao,$sql);
@@ -29,6 +30,7 @@ $id =  $_POST['id'];
 
     $recebido_id = $array['recebido_id'];
     $data_entrega =  $array['data_entrega'];
+    $data_compra = $array['data_compra'];
 
 
 ?>
@@ -64,7 +66,7 @@ $id =  $_POST['id'];
                 </div>
             </div>
             <div class="row">
-                <div class="col-6">
+                <div class="col-4">
                     <div class="form-group">
                         <label for="recebido" class="control-label mb-1">Recebido por</label>
                         <?php
@@ -87,7 +89,13 @@ $id =  $_POST['id'];
                         </select>
                     </div>
                 </div>
-                <div class="col-6">
+                <div class="col-4">
+                    <div class="form-group">
+                        <label for="data_compra" class="control-label mb-1">Data da compra</label>
+                        <input id='data_compra' name='data_compra' type='date' class='form-control' value='<?=$data_compra?>' disabled>
+                    </div>
+                </div>
+                <div class="col-4">
                     <div class="form-group">
                         <label for="data_entrega" class="control-label mb-1">Data da entrega</label>
                         <?php
@@ -191,6 +199,7 @@ $(document).ready(function(){
                             }else if(json.erro == true){
                                 Swal.fire({
                                     title: json.msg,
+                                    icon: 'error',
                                     allowOutsideClick: () => {
                                         const popup = Swal.getPopup()
                                         popup.classList.remove('swal2-show')

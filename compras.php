@@ -191,7 +191,6 @@ function nomeMes($num){
                 }
                 echo '</optgroup>';
             }
-            // file_put_contents('arrays.txt', json_encode($arrAno));
                                             echo '  
                                                         </select>
                                                     </div>

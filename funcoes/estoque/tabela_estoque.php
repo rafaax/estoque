@@ -26,7 +26,7 @@ $pagina = filter_input(INPUT_GET, "pagina", FILTER_SANITIZE_NUMBER_INT);
 if($pagina == null){
     $pagina = 1;
 }
-$quantidade_por_pagina = 10;
+$quantidade_por_pagina = 20;
 $inicio = ($pagina * $quantidade_por_pagina) - $quantidade_por_pagina;
 ?>
 
@@ -59,60 +59,60 @@ $inicio = ($pagina * $quantidade_por_pagina) - $quantidade_por_pagina;
 <?php
 if(isset($_POST["query"])){
     $search = mysqli_real_escape_string($conexao, $_POST["query"]);
-    $sql = "SELECT e.id, e.quantidade, e.tempo_estoque, e.compra_id, e.local, c.nome, c.partnumber, 
+    $sql = "SELECT e.id, SUM(e.quantidade) as quantidade, e.tempo_estoque, e.compra_id, e.local, c.nome, c.partnumber, 
         (SELECT nome FROM categoria WHERE id = 
             (SELECT categoria_id from compras where id = e.compra_id) LIMIT 1) AS categoria,
         (SELECT data_entrega FROM recebidos WHERE compra_id = e.compra_id) AS data_entrega
-        FROM estoque e inner join compras c on c.id = e.compra_id where (c.nome LIKE '%$search%')
+        FROM estoque e inner join compras c on c.id = e.compra_id where (c.nome LIKE '%$search%') and (e.quantidade > 0) GROUP BY partnumber
         order BY (SELECT data_compra FROM compras WHERE id = e.compra_id) desc limit $inicio, $quantidade_por_pagina";
 }else if(isset($_POST['filter'])){
     // file_put_contents('logfilter.txt', $_POST['filter']);
     if($_POST['filter'] == 'qntmaior'){
 
-        $sql = "SELECT e.id, e.quantidade, e.tempo_estoque, e.compra_id, e.local,
+        $sql = "SELECT e.id, SUM(e.quantidade) as quantidade, e.tempo_estoque, e.compra_id, e.local,
         (SELECT nome from compras where id = e.compra_id) AS nome,
         (SELECT partnumber from compras where id = e.compra_id) AS partnumber,
         (SELECT nome FROM categoria WHERE id = 
             (SELECT categoria_id from compras where id = e.compra_id)
         LIMIT 1) AS categoria,
         (SELECT data_entrega FROM recebidos WHERE compra_id = e.compra_id) AS data_entrega
-        FROM estoque e
+        FROM estoque e where (e.quantidade > 0) GROUP BY partnumber
         order BY e.quantidade desc limit $inicio, $quantidade_por_pagina ";
 
     }else if($_POST['filter'] == 'qntmenor'){
 
-        $sql = "SELECT e.id, e.quantidade, e.tempo_estoque, e.compra_id, e.local,
+        $sql = "SELECT e.id, SUM(e.quantidade) as quantidade, e.tempo_estoque, e.compra_id, e.local,
         (SELECT nome from compras where id = e.compra_id) AS nome,
         (SELECT partnumber from compras where id = e.compra_id) AS partnumber,
         (SELECT nome FROM categoria WHERE id = 
             (SELECT categoria_id from compras where id = e.compra_id)
         LIMIT 1) AS categoria,
         (SELECT data_entrega FROM recebidos WHERE compra_id = e.compra_id) AS data_entrega
-        FROM estoque e
+        FROM estoque e where (e.quantidade > 0) GROUP BY partnumber
         order BY e.quantidade asc limit $inicio, $quantidade_por_pagina ";
     
     }else if($_POST['filter'] == 'old'){
 
-        $sql = "SELECT e.id, e.quantidade, e.tempo_estoque, e.compra_id, e.local,
+        $sql = "SELECT e.id, SUM(e.quantidade) as quantidade, e.tempo_estoque, e.compra_id, e.local,
         (SELECT nome from compras where id = e.compra_id) AS nome,
         (SELECT partnumber from compras where id = e.compra_id) AS partnumber,
         (SELECT nome FROM categoria WHERE id = 
             (SELECT categoria_id from compras where id = e.compra_id)
         LIMIT 1) AS categoria,
         (SELECT data_entrega FROM recebidos WHERE compra_id = e.compra_id) AS data_entrega
-        FROM estoque e
+        FROM estoque e where (e.quantidade > 0) GROUP BY partnumber
         order BY e.tempo_estoque desc limit $inicio, $quantidade_por_pagina ";
     }
 }
 else{
-    $sql = "SELECT e.id, e.quantidade, e.tempo_estoque, e.compra_id, e.local,
+    $sql = "SELECT e.id, SUM(e.quantidade) as quantidade, e.tempo_estoque, e.compra_id, e.local,
     (SELECT nome from compras where id = e.compra_id) AS nome,
     (SELECT partnumber from compras where id = e.compra_id) AS partnumber,
     (SELECT nome FROM categoria WHERE id = 
         (SELECT categoria_id from compras where id = e.compra_id)
     LIMIT 1) AS categoria,
     (SELECT data_entrega FROM recebidos WHERE compra_id = e.compra_id) AS data_entrega
-    FROM estoque e
+    FROM estoque e where (e.quantidade > 0) GROUP BY partnumber
     order BY (SELECT data_compra FROM compras WHERE id = e.compra_id) desc limit $inicio, $quantidade_por_pagina ";
 }  
 $query = mysqli_query($conexao, $sql);
@@ -160,9 +160,11 @@ $query = mysqli_query($conexao, $sql);
                     <td>$local</td>
                     <td>
                         <div class='table-data-feature'>
-                            <button class='item' data-toggle='tooltip' data-placement='top' title='Send'>
+                        <a href='estoque?retirado=$id'>
+                            <button class='item' data-toggle='tooltip' data-placement='top' title='Retirar'>
                                 <i class='zmdi zmdi-mail-send'></i>
                             </button>
+                        </a>
                         </div>
                     </td>
                 </tr>
@@ -183,4 +185,36 @@ $query = mysqli_query($conexao, $sql);
             
         </tbody>
     </table>
+    <?php
+    
+    $query_pg = "SELECT COUNT(id) AS num_result FROM compras";
+    $result_pg = mysqli_query($conexao, $query_pg);
+    $row_pg = mysqli_fetch_assoc($result_pg);
+
+    $quantidade_pg = ceil($row_pg['num_result'] / $quantidade_por_pagina);
+    $max_links = 2;
+    ?>
+
+    <div class="center">
+        <div class="pagination">
+            
+            <a href="#" class="page-link" onclick="listarUsuarios(1)">&laquo;</a>
+            <?php 
+            for($pag_ant = $pagina - $max_links; $pag_ant <= $pagina - 1; $pag_ant++){
+                if($pag_ant >= 1){
+                    echo "<a class='page-link' href='#' onclick='listarUsuarios($pag_ant)' >$pag_ant</a>";
+                }        
+            }
+            echo "<a class='page-link active' href='#'>$pagina</a>";
+
+            for($pag_dep = $pagina + 1; $pag_dep <= $pagina + $max_links; $pag_dep++){
+                if($pag_dep <= $quantidade_pg){
+                    echo "<a class='page-link' href='#' onclick='listarUsuarios($pag_dep)'>$pag_dep</a>";
+                }        
+            }
+            echo "<a href='#' class='page-link' onclick='listarUsuarios($quantidade_pg)'>&raquo;</a>";
+        
+        ?>
+        </div>
+    </div>
 </div>

@@ -40,7 +40,59 @@
         <?php require 'subtelas/sidebar.php';?>
         <div class="page-container">
             <?php require 'subtelas/header.php';?>
-            <?php if($_SERVER['REQUEST_METHOD'] == 'GET'){
+            <?php if($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['retirado'])){
+                    $id_retirar = $_GET['retirado'];
+                    $sql = "SELECT (SELECT partnumber from compras WHERE id = c.compra_id ) AS partnumber
+                        from estoque c where quantidade > 0 and id = $id_retirar";  
+                    $query = mysqli_query($conexao, $sql);
+                    $res = mysqli_fetch_array($query);
+                    $partnumber = $res['partnumber'];
+
+                    $sql = "SELECT c.id FROM compras c INNER JOIN estoque e ON c.id = e.compra_id WHERE c.partnumber = '$partnumber'";
+                    $query = mysqli_query($conexao, $sql);
+                    $count = mysqli_num_rows($query);
+
+                    if($count > 1){
+                        
+                        echo '<div class="main-content">
+                                <div class="section__content section__content--p30">    
+                                    <div class="container-fluid">
+                                        <div class="row">    
+                                            <div class="col-lg-9">
+                                                <div id="seleciona_produto"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>';                      
+                    }else{
+                        echo '<div class="main-content">
+                                <div class="section__content section__content--p30">    
+                                    <div class="container-fluid">
+                                        <div class="row">    
+                                            <div class="col-lg-9">
+                                                <div id="retira_produto"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>';
+                    }
+                
+
+                }else if($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['res']) && isset($_GET['value'])){
+                    if($_GET['res'] == true){
+                        echo '<div class="main-content">
+                                <div class="section__content section__content--p30">    
+                                    <div class="container-fluid">
+                                        <div class="row">    
+                                            <div class="col-lg-9">
+                                                <div id="retira_produto-res"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>';
+                    }
+                }
+                else if($_SERVER['REQUEST_METHOD'] == 'GET'){
                 echo '<div class="main-content">
                     <div class="section__content section__content--p30">
                         <div class="container-fluid"><div class="row">
@@ -107,7 +159,12 @@
 
     $(document).ready(function(){
 	
-        <?php if($_SERVER['REQUEST_METHOD'] === 'GET'){
+        <?php if($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['retirado'])){
+            ?> load_retirar(<?=$_GET['retirado']?>)<?php
+        }else if($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['res']) && isset($_GET['value']) && $_GET['res'] == true){
+            ?>load_retirar_pos_res(<?=$_GET['value']?>); <?php
+        }
+        else if($_SERVER['REQUEST_METHOD'] === 'GET'){
             ?> load_table();<?php
         }
         ?>
@@ -130,6 +187,34 @@
             });  
         }
 
+        function load_retirar(id){
+            // console.log('a');
+            $.ajax({
+                url:"funcoes/estoque/retirar_estoque.php",
+                method:"post",
+                data:{id:id},
+                success:function(data){
+                    $('#seleciona_produto').html(data); 
+                    $('#retira_produto').html(data); 
+                }
+            });
+        }
+
+        function load_retirar_pos_res(id){
+            // console.log('a');
+            $.ajax({
+                url:"funcoes/estoque/retirar_estoque.php",
+                method:"post",
+                data:{
+                    value:id,
+                    res: true 
+                },
+                success:function(data){ 
+                    $('#retira_produto-res').html(data); 
+                }
+            });
+        }
+
 
         function load_table(query){
             $.ajax({
@@ -144,6 +229,7 @@
                 }
             });
         }
+
         
         $('.au-input--xl').on('keyup', function() {
             var search = $(this).val();
