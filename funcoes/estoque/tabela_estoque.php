@@ -56,7 +56,7 @@ $inicio = ($pagina * $quantidade_por_pagina) - $quantidade_por_pagina;
 }
 
 </style>
-<?php 
+<?php
 if(isset($_POST["query"])){
     $search = mysqli_real_escape_string($conexao, $_POST["query"]);
     $sql = "SELECT e.id, e.quantidade, e.tempo_estoque, e.compra_id, e.local, c.nome, c.partnumber, 
@@ -65,7 +65,46 @@ if(isset($_POST["query"])){
         (SELECT data_entrega FROM recebidos WHERE compra_id = e.compra_id) AS data_entrega
         FROM estoque e inner join compras c on c.id = e.compra_id where (c.nome LIKE '%$search%')
         order BY (SELECT data_compra FROM compras WHERE id = e.compra_id) desc limit $inicio, $quantidade_por_pagina";
-}else{
+}else if(isset($_POST['filter'])){
+    // file_put_contents('logfilter.txt', $_POST['filter']);
+    if($_POST['filter'] == 'qntmaior'){
+
+        $sql = "SELECT e.id, e.quantidade, e.tempo_estoque, e.compra_id, e.local,
+        (SELECT nome from compras where id = e.compra_id) AS nome,
+        (SELECT partnumber from compras where id = e.compra_id) AS partnumber,
+        (SELECT nome FROM categoria WHERE id = 
+            (SELECT categoria_id from compras where id = e.compra_id)
+        LIMIT 1) AS categoria,
+        (SELECT data_entrega FROM recebidos WHERE compra_id = e.compra_id) AS data_entrega
+        FROM estoque e
+        order BY e.quantidade desc limit $inicio, $quantidade_por_pagina ";
+
+    }else if($_POST['filter'] == 'qntmenor'){
+
+        $sql = "SELECT e.id, e.quantidade, e.tempo_estoque, e.compra_id, e.local,
+        (SELECT nome from compras where id = e.compra_id) AS nome,
+        (SELECT partnumber from compras where id = e.compra_id) AS partnumber,
+        (SELECT nome FROM categoria WHERE id = 
+            (SELECT categoria_id from compras where id = e.compra_id)
+        LIMIT 1) AS categoria,
+        (SELECT data_entrega FROM recebidos WHERE compra_id = e.compra_id) AS data_entrega
+        FROM estoque e
+        order BY e.quantidade asc limit $inicio, $quantidade_por_pagina ";
+    
+    }else if($_POST['filter'] == 'old'){
+
+        $sql = "SELECT e.id, e.quantidade, e.tempo_estoque, e.compra_id, e.local,
+        (SELECT nome from compras where id = e.compra_id) AS nome,
+        (SELECT partnumber from compras where id = e.compra_id) AS partnumber,
+        (SELECT nome FROM categoria WHERE id = 
+            (SELECT categoria_id from compras where id = e.compra_id)
+        LIMIT 1) AS categoria,
+        (SELECT data_entrega FROM recebidos WHERE compra_id = e.compra_id) AS data_entrega
+        FROM estoque e
+        order BY e.tempo_estoque desc limit $inicio, $quantidade_por_pagina ";
+    }
+}
+else{
     $sql = "SELECT e.id, e.quantidade, e.tempo_estoque, e.compra_id, e.local,
     (SELECT nome from compras where id = e.compra_id) AS nome,
     (SELECT partnumber from compras where id = e.compra_id) AS partnumber,
@@ -75,7 +114,7 @@ if(isset($_POST["query"])){
     (SELECT data_entrega FROM recebidos WHERE compra_id = e.compra_id) AS data_entrega
     FROM estoque e
     order BY (SELECT data_compra FROM compras WHERE id = e.compra_id) desc limit $inicio, $quantidade_por_pagina ";
-}    
+}  
 $query = mysqli_query($conexao, $sql);
 
 ?>
@@ -86,8 +125,8 @@ $query = mysqli_query($conexao, $sql);
             <tr>
                 <th>produto</th>
                 <th>partnumber</th>
-                <th>categoria</th>
                 <th>tempo estoque</th>
+                <th>quantidade</th>
                 <th>local</th>
                 <th></th>
             </tr>
@@ -116,8 +155,8 @@ $query = mysqli_query($conexao, $sql);
                     <td>
                         <span class='block-email'>$partnumber</span>
                     </td>
-                    <td class='desc'>$categoria</td>
-                    <td>$tempo_estoque</td>
+                    <td class='desc'>$tempo_estoque dias</td>
+                    <td>$quantidade</td>
                     <td>$local</td>
                     <td>
                         <div class='table-data-feature'>

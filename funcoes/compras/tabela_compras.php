@@ -67,6 +67,23 @@ $inicio = ($pagina * $quantidade_por_pagina) - $quantidade_por_pagina;
                     or  nome LIKE '%$search%' 
                     OR partnumber LIKE '%$search%' order by data_compra desc
                 ";
+            }else if(isset($_POST["filter"])){
+                
+                list($ano, $mes) = explode('-', $_POST['filter']);
+
+                $sql = "SELECT 
+                    e.id, e.nome, e.valor_unitario, e.frete, e.imposto, e.parcelas, e.quantidade, 
+                    e.site, e.descricao, e.data_compra, e.previsao_entrega, e.partnumber, 
+                    (SELECT nome FROM pagamentos WHERE id = e.pagamento_id ) AS pagamento_id, 
+                    (SELECT nome FROM categoria WHERE id = e.categoria_id) AS categoria_id, 
+                    (SELECT nome FROM fornecedor WHERE id = e.fornecedor_id) AS fornecedor_id, 
+                    (SELECT nome FROM integrantes WHERE id = e.solicitante_id) AS solicitante_id, 
+                    (SELECT nome FROM integrantes WHERE id = e.recebido_id) AS recebido_id,
+                    IFNULL((SELECT data_entrega FROM recebidos WHERE compra_id = e.id), 0) AS ifnullresult
+                    
+                    FROM compras e where year(data_compra) = '$ano' and month(data_compra) = '$mes' 
+                    order by data_compra desc limit $inicio, $quantidade_por_pagina ";
+
             }
             else
             {

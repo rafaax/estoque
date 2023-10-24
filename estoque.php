@@ -36,18 +36,10 @@
 
 <body class="animsition">
     <div class="page-wrapper">
-        <!-- HEADER MOBILE-->
         <?php require 'subtelas/header-mobile.php';?>
-        <!-- END HEADER MOBILE-->
-        <!-- MENU SIDEBAR-->
         <?php require 'subtelas/sidebar.php';?>
-        <!-- END MENU SIDEBAR-->
-        <!-- PAGE CONTAINER-->
         <div class="page-container">
-            <!-- HEADER DESKTOP-->
             <?php require 'subtelas/header.php';?>
-            <!-- END HEADER DESKTOP-->
-            <!-- MAIN CONTENT-->
             <?php if($_SERVER['REQUEST_METHOD'] == 'GET'){
                 echo '<div class="main-content">
                     <div class="section__content section__content--p30">
@@ -63,7 +55,16 @@
                                             </button>
                                         </div>
                                     </div>
+                                    
                                     <div class="table-data__tool-right">
+                                        <div class="rs-select2--dark rs-select2--md rs-select2--dark2">
+                                            <select class="js-example-basic-single" id="datafilter">
+                                                <option></option>
+                                                <option value="old">+ Antigo</option>
+                                                <option value="qntmaior">+ Quantidade</option>
+                                                <option value="qntmenor">- Quantidade</option>
+                                            </select>
+                                        </div>
                                         <button class="au-btn au-btn-icon au-btn--green au-btn--small">
                                             <i class="zmdi zmdi-open-in-new"></i>EXPORTAR PARA EXCEL
                                         </button>
@@ -80,15 +81,16 @@
         </div>
     </div>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.min.js"></script>
     <script src="vendor/jquery-3.2.1.min.js"></script>
     <script src="vendor/bootstrap-4.1/popper.min.js"></script>
     <script src="vendor/bootstrap-4.1/bootstrap.min.js"></script>
-    <script src="vendor/slick/slick.min.js">
-    </script>
+    <script src="vendor/slick/slick.min.js"></script>
     <script src="vendor/wow/wow.min.js"></script>
     <script src="vendor/animsition/animsition.min.js"></script>
-    <script src="vendor/bootstrap-progressbar/bootstrap-progressbar.min.js">
-    </script>
+    <script src="vendor/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+    
     <script src="vendor/counter-up/jquery.waypoints.min.js"></script>
     <script src="vendor/counter-up/jquery.counterup.min.js">
     </script>
@@ -98,9 +100,6 @@
     <script src="vendor/select2/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="js/main.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.min.js"></script>  
-
 </body>
 </html>
 
@@ -112,6 +111,25 @@
             ?> load_table();<?php
         }
         ?>
+
+        $('.js-example-basic-single').select2({
+            placeholder: 'Filtre por data',
+            allowClear: true,
+        });
+        
+        function data_filter(data){
+            $.ajax({
+                url:"funcoes/estoque/tabela_estoque.php",
+                method:"post",
+                data:{filter:data},
+                success:function(data){
+                    // renderizar a tabela e os elementos
+                    $('#tabela_estoque').html(data); 
+                    //
+                }
+            });  
+        }
+
 
         function load_table(query){
             $.ajax({
@@ -143,7 +161,14 @@
         $('#buttonClear').on('click', function() {
             $('#searchEstoque').val('');
             load_table();	
-        });   
+        });
+
+
+        $('#datafilter').on('select2:select', function (e) {
+            // console.log(e);
+            let value = e.params.data.id;
+            data_filter(value);
+        });
 
 
 

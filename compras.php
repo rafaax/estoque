@@ -1,4 +1,37 @@
 <?php require_once 'get_dados.php';?>
+<?php require_once 'conexao.php';?>
+<?php 
+
+function nomeMes($num){
+    if($num == 1){
+        return 'Janeiro';
+    }else if($num == 2){
+        return 'Fevereiro';
+    }else if($num == 3){
+        return 'Março';
+    }else if($num == 4){
+        return 'Abril';
+    }else if($num == 5){
+        return 'Maio';
+    }else if($num == 6){
+        return 'Junho';
+    }else if($num == 7){
+        return 'Julho';
+    }else if($num == 8){
+        return 'Agosto';
+    }else if($num == 9){
+        return 'Setembro';
+    }else if($num == 10){
+        return 'Outubro';
+    }else if($num == 11){
+        return 'Novembro';
+    }else if($num == 12){
+        return 'Dezembro';
+    }
+
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -132,6 +165,36 @@
                                                     </div>
                                                 </div>
                                                 <div class="table-data__tool-right">
+                                                    <div class="rs-select2--dark rs-select2--md rs-select2--dark2">
+                                                        <select class="js-example-basic-single" id="datafilter">
+                                                            <option></option>';
+            $sql = "SELECT year(data_compra) as ano, month(data_compra) as mes from compras 
+                where data_compra is not null group by year(data_compra), month(data_compra) order by data_compra desc";
+            $query = mysqli_query($conexao, $sql);
+            $arrAno = array();
+            while($array = mysqli_fetch_array($query)){
+                
+                if($array['ano'] != $ano ){
+                    array_push($arrAno, $array['ano']);    
+                }
+                $ano = $array['ano'];
+            }
+
+            foreach($arrAno as $array){
+                echo "<optgroup label='$array'>";
+                $sqlforeach = "SELECT month(data_compra) as mes_compra from compras where year(data_compra) = '$array' order by data_compra desc";
+                $query = mysqli_query($conexao, $sqlforeach);
+                while($mes = mysqli_fetch_array($query)){
+                    $mes_compra = $mes['mes_compra'];
+                    $nome = nomeMes($mes_compra);
+                    echo "<option value='$array-$mes_compra'> $nome </option>";
+                }
+                echo '</optgroup>';
+            }
+            // file_put_contents('arrays.txt', json_encode($arrAno));
+                                            echo '  
+                                                        </select>
+                                                    </div>
                                                     <button class="au-btn au-btn-icon au-btn--green au-btn--small">
                                                         <i class="zmdi zmdi-plus"></i>adicionar uma compra</button>
                                                 </div>
@@ -147,6 +210,7 @@
         </div>
     </div>
 </body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <script src="vendor/jquery-3.2.1.min.js"></script>
 <script src="vendor/bootstrap-4.1/popper.min.js"></script>
 <script src="vendor/bootstrap-4.1/bootstrap.min.js"></script>
@@ -165,8 +229,8 @@
 <script src="vendor/select2/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="js/main.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.min.js"></script>  
+
 
 <script type="text/javascript">
 
@@ -182,6 +246,32 @@
         }else if($_SERVER['REQUEST_METHOD'] === 'GET'){
             ?> load_compras();<?php 
         }?>
+
+        $('.js-example-basic-single').select2({
+            placeholder: 'Filtre por data',
+            allowClear: true,
+        });
+
+        $('#datafilter').on('select2:select', function (e) {
+        
+            let value = e.params.data.id;
+            data_filter(value);
+
+        });
+
+        function data_filter(month){
+            $.ajax({
+                url:"funcoes/compras/tabela_compras.php",
+                method:"post",
+                data:{filter:month},
+                success:function(data)
+                {
+                    // renderizar a tabela e os elementos
+                    $('#tabela_compras').html(data); 
+                    //
+                }
+            });
+        }
         
         function load_cadastro(query)
         {
