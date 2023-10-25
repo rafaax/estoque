@@ -115,16 +115,21 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])){
 
             <?php 
         }else{
+            $id = $_POST['id'];
+            $sql = "SELECT e.quantidade, c.partnumber, c.nome, e.tempo_estoque FROM estoque e 
+	            INNER JOIN compras c ON e.compra_id = c.id WHERE e.id = $id LIMIT 1 ";
+            $query = mysqli_query($conexao, $sql);
+            $array = mysqli_fetch_array($query);
             ?>  
                 
                 <div class="card">
                     <div class="card-header">Retirada</div>
                     <div class="card-body">
                         <div class="card-title">
-                            <h3 class="text-center"><?=$array['nome']?></h3>
+                            <h3 class="text-center">Você está retirando o produto: <?=$array['nome']?></h3>
                         </div>
                         <hr>
-                        <form id="form_edit" method="post">
+                        <form id="form_retirada_no_validation" method="post">
                             <div class="row">
                                 <div style="display: none;">
                                     <div class="form-group">
@@ -149,24 +154,33 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])){
                                 </div>
                             </div>
                             <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="quantidade" class="control-label mb-1">Quantidade em estoque</label>
+                                        <input id="quantidade" name="quantidade" type="text" class="form-control" disabled
+                                        aria-invalid="false" value="<?=$array['quantidade']?>">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="tempo_estoque" class="control-label mb-1">Tempo em estoque</label>
+                                        <input id='tempo_estoque' name='tempo_estoque' type='text' class='form-control' value='<?=$array['tempo_estoque']?> dias' disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-4">
                                     <div class="form-group">
-                                        <label for="recebido" class="control-label mb-1">Recebido por</label>
-                                        <?php
-                                        
-                                        if($recebido_id == ''){
-                                            $sql = "SELECT * from integrantes order by nome asc";
-                                        }else{
-                                            $sql = "SELECT * from integrantes order by FIND_IN_SET(id, '$recebido_id') desc";
-                                        }
-                                        
+                                        <label for="retirado_por" class="control-label mb-1">Quem retirou?</label>
+                                        <?php 
+                                        $sql = "SELECT * from integrantes order by nome asc";
                                         $query = mysqli_query($conexao, $sql);
                                         ?>
-                                        <select name="recebido" id="recebido" class="form-control">
+                                        <select name="retirado_por" id="retirado_por" class="form-control" aria-required="true">
                                             <?php 
                                             while($array = mysqli_fetch_assoc($query)){
-                                                $recebido = $array["nome"];
-                                                echo "<option>$recebido</option>";
+                                                $retirado = $array["nome"];
+                                                echo "<option>$retirado</option>";
                                             }
                                             ?>
                                         </select>
@@ -174,26 +188,31 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])){
                                 </div>
                                 <div class="col-4">
                                     <div class="form-group">
-                                        <label for="data_compra" class="control-label mb-1">Data da compra</label>
-                                        <input id='data_compra' name='data_compra' type='date' class='form-control' value='<?=$data_compra?>' disabled>
+                                        <label for="data_compra" class="control-label mb-1">Data da retirada</label>
+                                        <input id="data_compra" name="data_compra" type="date" class="form-control" aria-required="true" required>
                                     </div>
                                 </div>
                                 <div class="col-4">
                                     <div class="form-group">
-                                        <label for="data_entrega" class="control-label mb-1">Data da entrega</label>
-                                        <?php
-                                        if($data_entrega == ''){
-                                            echo '<input id="data_entrega" name="data_entrega" type="date" aria-required="true" class="form-control">';
-                                        }else{
-                                            echo "<input id='data_entrega' name='data_entrega' type='date'  aria-required='true' class='form-control' value='$data_entrega'>";    
-                                        }
-                                        ?>
+                                        <label for="quantidade_retirada" class="control-label mb-1">Quantidade retirada</label>
+                                        <input id="quantidade_retirada" name="quantidade_retirada" type="text" class="form-control"
+                                        aria-required="true" aria-invalid="false" placeholder="Quantidade a ser retirada" required>
                                     </div>
                                 </div>
-                            </div>            
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label for="motivo_retirada" class="control-label mb-1">Motivo</label>
+                                        <input id='motivo_retirada' name='motivo_retirada' type='text' class='form-control' 
+                                        placeholder="Motivo da retirada" aria-required="true" required>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div>
                                 <button id="payment-button" type="submit" class="btn btn-lg btn-info btn-block">
-                                    <span>Editar</span>
+                                    <span>Retirar</span>
                                 </button>
                             </div>
                         </form>
@@ -212,7 +231,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])){
                             <h3 class="text-center"><?=$array['nome']?></h3>
                         </div>
                         <hr>
-                        <form id="form_edit" method="post">
+                        <form id="form_retirada_with_validation" method="post">
                             <div class="row">
                                 <div style="display: none;">
                                     <div class="form-group">
@@ -323,4 +342,34 @@ function retirada(id){
         }
     })
 }
+$(document).ready(function(){
+    $('#form_retirada_no_validation').on("submit", function(event){
+            event.preventDefault();
+
+            $.ajax({
+                method: "POST",
+                url: "funcoes/estoque/backend_retirar.php",
+                data: new FormData(this),
+                contentType: false,
+                processData: false,
+                beforeSend: function () {
+                    Swal.fire({
+                        title: 'Aguarde...',
+                        text: 'Cadastrando evento...',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        showConfirmButton: false,
+                        willOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                },
+                success: function (result) {
+                    console.log(result);
+                    var json = JSON.parse(result);
+                    Swal.close();
+                }
+            })
+        });
+    });
 </script>
