@@ -428,6 +428,7 @@ function nomeMes($num){
     });
 </script>
 <script>
+    
     <?php if(!isset($_GET['cadastro']) && !isset($_GET['edit']) && !isset($_GET['nota'])){
         ?>
         const tabela = document.querySelector("#tabela_compras");

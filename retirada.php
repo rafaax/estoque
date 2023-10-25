@@ -44,7 +44,8 @@
                     
 
                 }else if($_SERVER['REQUEST_METHOD'] == 'GET'){
-                echo '<div class="main-content">
+                echo '
+                <div class="main-content">
                     <div class="section__content section__content--p30">
                         <div class="container-fluid"><div class="row">
                             <div class="col-md-12">
@@ -93,6 +94,17 @@
 </html>
 
 <script type="text/javascript">
+
+    const tabela = document.querySelector("#tabela_recebidos");
+
+    const listarRegistros = async (pagina) => {
+        const dados = await fetch("funcoes/recebidos/tabela_recebidos.php?pagina=" + pagina);
+        const resposta = await dados.text();
+        tabela.innerHTML = resposta;
+    }
+
+    listarRegistros(1);
+
 
     $(document).ready(function(){
 	

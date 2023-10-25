@@ -261,6 +261,17 @@
     }); // fecha document ready
     
 
+</script>
 
+<script>
+const tabela = document.querySelector("#tabela_estoque");
+
+    const listarRegistros = async (pagina) => {
+        const dados = await fetch("funcoes/estoque/tabela_estoque.php?pagina=" + pagina);
+        const resposta = await dados.text();
+        tabela.innerHTML = resposta;
+    }
+
+    listarRegistros(1);
 
 </script>
