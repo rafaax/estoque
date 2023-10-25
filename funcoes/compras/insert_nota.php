@@ -19,7 +19,6 @@ function validaRegistro($id){
     }else{
         return true;
     }
-
 }
 
 function getPath($compra_id){
@@ -83,8 +82,7 @@ if(isset($_FILES['file-input'])){
 
     if(validaRegistro($idCompra)){
         
-        $atualpath = getPath($idCompra);
-        delPath($atualpath);
+        delPath(getPath($idCompra));
 
         $sql = "UPDATE notas_fiscais set path = '$path' where compra_id = $idCompra";
         $query = mysqli_query($conexao, $sql);
