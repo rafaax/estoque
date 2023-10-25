@@ -35,6 +35,17 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' ){
         $recebido_id = $array['recebido_id'];
         $data_entrega = $array['data_entrega']; 
         
+        $sql = "select * from retirada where compra_id = '$compra_id' ";
+        $queryRetirada = mysqli_query($conexao, $sql);
+        if(mysqli_num_rows($queryRetirada) >= 1){
+            echo json_encode(array(
+                'erro' => true,
+                'msg' => 'Não pode deletar um recebimento que ja teve uma retirada.'
+            ));
+            die();
+        }
+
+
         $sql = "UPDATE recebidos set data_entrega = NULL, recebido_id = NULL where id = $id";
         $query = mysqli_query($conexao, $sql);
 
@@ -46,6 +57,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' ){
                 $query = mysqli_query($conexao, $sql);
                 if($query){
                     if(logRetirarRecebimento($userSession, $compra_id)){
+
                         echo json_encode(array(
                             'erro' => false,
                             'msg' => 'Recebimento foi excluído com sucesso.'

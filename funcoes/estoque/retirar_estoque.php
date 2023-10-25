@@ -31,7 +31,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])){
 
         $res = mysqli_fetch_array($query);
         $partnumber = $res['partnumber'];
-        $sql = "SELECT c.id FROM compras c INNER JOIN estoque e ON c.id = e.compra_id WHERE c.partnumber = '$partnumber'";
+        $sql = "SELECT c.id FROM compras c INNER JOIN estoque e ON c.id = e.compra_id 
+            WHERE c.partnumber = '$partnumber' and e.quantidade > 0";
         $query = mysqli_query($conexao, $sql);
         $count = mysqli_num_rows($query);
 
@@ -222,8 +223,109 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])){
         }
     }
 }else if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['res']) && $_POST['res'] == true && isset($_POST['value'])){
-    ?>
+    $id = $_POST['value'];
+            $sql = "SELECT e.quantidade, c.partnumber, c.nome, e.tempo_estoque FROM estoque e 
+	            INNER JOIN compras c ON e.compra_id = c.id WHERE e.id = $id LIMIT 1 ";
+            $query = mysqli_query($conexao, $sql);
+            $array = mysqli_fetch_array($query);
+            ?>  
+    
+    <div class="card">
+        <div class="card-header">Retirada</div>
+        <div class="card-body">
+            <div class="card-title">
+                <h3 class="text-center">Você está retirando o produto: <?=$array['nome']?></h3>
+            </div>
+            <hr>
+            <form id="form_retirada_no_validation" method="post">
+                <div class="row">
+                    <div style="display: none;">
+                        <div class="form-group">
+                            <label for="id_produto" class="control-label mb-1">Id Produto</label>
+                            <input id="id_produto" name="id_produto" class="form-control"
+                            type="text" value="<?=$id?>">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="nome_produto" class="control-label mb-1">Nome Produto</label>
+                            <input id="nome_produto" name="nome_produto" class="form-control" disabled
+                            type="text" aria-required="true" aria-invalid="false" placeholder="Nome do produto" value="<?=$array['nome']?>">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="partnumber_produto" class="control-label mb-1">PartNumber</label>
+                            <input id="partnumber_produto" name="partnumber_produto" type="text" class="form-control" disabled
+                            aria-required="true" aria-invalid="false" placeholder="PartNumber do produto" value="<?=$array['partnumber']?>"> 
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="quantidade" class="control-label mb-1">Quantidade em estoque</label>
+                            <input id="quantidade" name="quantidade" type="text" class="form-control" disabled
+                            aria-invalid="false" value="<?=$array['quantidade']?>">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="tempo_estoque" class="control-label mb-1">Tempo em estoque</label>
+                            <input id='tempo_estoque' name='tempo_estoque' type='text' class='form-control' value='<?=$array['tempo_estoque']?> dias' disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <div class="form-group">
+                            <label for="retirado_por" class="control-label mb-1">Quem retirou?</label>
+                            <?php 
+                            $sql = "SELECT * from integrantes order by nome asc";
+                            $query = mysqli_query($conexao, $sql);
+                            ?>
+                            <select name="retirado_por" id="retirado_por" class="form-control" aria-required="true">
+                                <?php 
+                                while($array = mysqli_fetch_assoc($query)){
+                                    $retirado = $array["nome"];
+                                    echo "<option>$retirado</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group">
+                            <label for="data_retirada" class="control-label mb-1">Data da retirada</label>
+                            <input id="data_retirada" name="data_retirada" type="date" class="form-control" aria-required="true" required>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group">
+                            <label for="quantidade_retirada" class="control-label mb-1">Quantidade retirada</label>
+                            <input id="quantidade_retirada" name="quantidade_retirada" type="number" class="form-control"
+                            aria-required="true" aria-invalid="false" placeholder="Quantidade a ser retirada" onchange='comparacao(this.value)' required min="1">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="motivo_retirada" class="control-label mb-1">Motivo</label>
+                            <input id='motivo_retirada' name='motivo_retirada' type='text' class='form-control' 
+                            placeholder="Motivo da retirada" aria-required="true" required>
+                        </div>
+                    </div>
+                </div>
 
+                <div>
+                    <button id="payment-button" type="submit" class="btn btn-lg btn-info btn-block">
+                        <span>Retirar</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
     <?php
 }
 
@@ -319,7 +421,24 @@ $(document).ready(function(){
                             icon: 'success',
                             title: 'Sucesso!',
                             text: json.msg,
-                        })
+                            html: 'Fechando em <b></b>  milisegundos',
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: () => {
+                                Swal.showLoading()
+                                const b = Swal.getHtmlContainer().querySelector('b')
+                                timerInterval = setInterval(() => {
+                                b.textContent = Swal.getTimerLeft()
+                                }, 100)
+                            },
+                            willClose: () => {
+                                clearInterval(timerInterval)
+                            }
+                            }).then((result) => {
+                                if (result.dismiss === Swal.DismissReason.timer) {
+                                    window.location.href = "http://127.0.0.1/estoque_git/estoque"
+                                }
+                            })
                     }else if(json.erro === true){
                         Swal.fire({
                             icon: 'error',

@@ -85,9 +85,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' ){
         $retirado_id = buscaIntegranteId($retirado);
         $compra_id = buscaCompraId($id_produto);
 
-
-        
-        
         $sql = "SELECT data_entrega from recebidos where compra_id = $compra_id limit 1";
         $query = mysqli_query($conexao, $sql);
         $array = mysqli_fetch_array($query);
@@ -102,7 +99,15 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' ){
             jsonEchoErro('Data de retirada não pode ser menor que a data da entrega!');
             exit();
         }
-        
+
+        $sql = "SELECT quantidade from estoque where id = $id_produto";
+        $query = mysqli_query($conexao, $sql);
+        $array = mysqli_fetch_array($query);
+        if($array['quantidade'] <= 0){
+            jsonEchoErro('Não existe mais este produto no estoque ');
+            die();
+        }
+
 
         if($retirado_id != false && $compra_id != false ){
             $sql = "INSERT INTO retirada(integrante_id, compra_id, estoque_id, quantidade_retirada, motivo, data_retirada) 

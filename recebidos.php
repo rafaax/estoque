@@ -249,11 +249,31 @@
                         id:id
                     },
                     success:function(data){
-                        Toast.fire({
-                            icon: 'success',
-                            title: 'Recebimento cancelado.'
-                        })
-                        listarRegistros(1);
+                        var json = JSON.parse(data);
+                        if(json.erro === false){
+                            Toast.fire({
+                                icon: 'success',
+                                title: 'Recebimento cancelado.'
+                            })
+                            listarRegistros(1);    
+                        }else if(json.erro === true){
+                            Swal.fire({
+                                title: json.msg,
+                                icon: 'error',
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            })
+                        }
+                        
                     }
                 });
             }

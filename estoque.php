@@ -48,7 +48,7 @@
                     $res = mysqli_fetch_array($query);
                     $partnumber = $res['partnumber'];
 
-                    $sql = "SELECT c.id FROM compras c INNER JOIN estoque e ON c.id = e.compra_id WHERE c.partnumber = '$partnumber'";
+                    $sql = "SELECT c.id FROM compras c INNER JOIN estoque e ON c.id = e.compra_id WHERE c.partnumber = '$partnumber' and e.quantidade > 0";
                     $query = mysqli_query($conexao, $sql);
                     $count = mysqli_num_rows($query);
 
