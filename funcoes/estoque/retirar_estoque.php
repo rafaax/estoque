@@ -188,15 +188,15 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])){
                                 </div>
                                 <div class="col-4">
                                     <div class="form-group">
-                                        <label for="data_compra" class="control-label mb-1">Data da retirada</label>
-                                        <input id="data_compra" name="data_compra" type="date" class="form-control" aria-required="true" required>
+                                        <label for="data_retirada" class="control-label mb-1">Data da retirada</label>
+                                        <input id="data_retirada" name="data_retirada" type="date" class="form-control" aria-required="true" required>
                                     </div>
                                 </div>
                                 <div class="col-4">
                                     <div class="form-group">
                                         <label for="quantidade_retirada" class="control-label mb-1">Quantidade retirada</label>
-                                        <input id="quantidade_retirada" name="quantidade_retirada" type="text" class="form-control"
-                                        aria-required="true" aria-invalid="false" placeholder="Quantidade a ser retirada" required>
+                                        <input id="quantidade_retirada" name="quantidade_retirada" type="number" class="form-control"
+                                        aria-required="true" aria-invalid="false" placeholder="Quantidade a ser retirada" onchange='comparacao(this.value)' required min="1">
                                     </div>
                                 </div>
                             </div>
@@ -223,89 +223,6 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])){
     }
 }else if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['res']) && $_POST['res'] == true && isset($_POST['value'])){
     ?>
-
-    <div class="card">
-                    <div class="card-header">Retirada</div>
-                    <div class="card-body">
-                        <div class="card-title">
-                            <h3 class="text-center"><?=$array['nome']?></h3>
-                        </div>
-                        <hr>
-                        <form id="form_retirada_with_validation" method="post">
-                            <div class="row">
-                                <div style="display: none;">
-                                    <div class="form-group">
-                                        <label for="id_produto" class="control-label mb-1">Id Produto</label>
-                                        <input id="id_produto" name="id_produto" class="form-control"
-                                        type="text" value="<?=$id?>">
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="form-group">
-                                        <label for="nome_produto" class="control-label mb-1">Nome Produto</label>
-                                        <input id="nome_produto" name="nome_produto" class="form-control" disabled
-                                        type="text" aria-required="true" aria-invalid="false" placeholder="Nome do produto" value="<?=$array['nome']?>">
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="form-group">
-                                        <label for="partnumber_produto" class="control-label mb-1">PartNumber</label>
-                                        <input id="partnumber_produto" name="partnumber_produto" type="text" class="form-control" disabled
-                                        aria-required="true" aria-invalid="false" placeholder="PartNumber do produto" value="<?=$array['partnumber']?>"> 
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-4">
-                                    <div class="form-group">
-                                        <label for="recebido" class="control-label mb-1">Recebido por</label>
-                                        <?php
-                                        
-                                        if($recebido_id == ''){
-                                            $sql = "SELECT * from integrantes order by nome asc";
-                                        }else{
-                                            $sql = "SELECT * from integrantes order by FIND_IN_SET(id, '$recebido_id') desc";
-                                        }
-                                        
-                                        $query = mysqli_query($conexao, $sql);
-                                        ?>
-                                        <select name="recebido" id="recebido" class="form-control">
-                                            <?php 
-                                            while($array = mysqli_fetch_assoc($query)){
-                                                $recebido = $array["nome"];
-                                                echo "<option>$recebido</option>";
-                                            }
-                                            ?>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="form-group">
-                                        <label for="data_compra" class="control-label mb-1">Data da compra</label>
-                                        <input id='data_compra' name='data_compra' type='date' class='form-control' value='<?=$data_compra?>' disabled>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="form-group">
-                                        <label for="data_entrega" class="control-label mb-1">Data da entrega</label>
-                                        <?php
-                                        if($data_entrega == ''){
-                                            echo '<input id="data_entrega" name="data_entrega" type="date" aria-required="true" class="form-control">';
-                                        }else{
-                                            echo "<input id='data_entrega' name='data_entrega' type='date'  aria-required='true' class='form-control' value='$data_entrega'>";    
-                                        }
-                                        ?>
-                                    </div>
-                                </div>
-                            </div>            
-                            <div>
-                                <button id="payment-button" type="submit" class="btn btn-lg btn-info btn-block">
-                                    <span>Editar</span>
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
 
     <?php
 }
@@ -342,6 +259,34 @@ function retirada(id){
         }
     })
 }
+
+function comparacao(qt){
+    var quantidade = document.getElementById('quantidade');
+    var quantidaderetirada = document.getElementById('quantidade_retirada');
+
+    if(parseInt(quantidaderetirada.value)  > parseInt(quantidade.value) ){
+        quantidaderetirada.value = null;
+        Swal.fire
+        ({
+            title: 'Erro!',
+            text: 'Valor inserido maior que a  quantidade em estoque',
+            icon: 'error',
+            confirmButtonText: 'Ok :)'
+        })
+    }
+
+    if(parseInt(quantidaderetirada.value) <= 0){
+        quantidaderetirada.value = null;
+        Swal.fire
+        ({
+            title: 'Erro!',
+            text: 'Insira um valor maior que 0.',
+            icon: 'error',
+            confirmButtonText: 'Entendi'
+        })
+    } 
+
+}
 $(document).ready(function(){
     $('#form_retirada_no_validation').on("submit", function(event){
             event.preventDefault();
@@ -368,6 +313,21 @@ $(document).ready(function(){
                     console.log(result);
                     var json = JSON.parse(result);
                     Swal.close();
+
+                    if(json.erro === false){
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Sucesso!',
+                            text: json.msg,
+                        })
+                    }else if(json.erro === true){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Erro!',
+                            text: json.msg,
+                        })
+                    }
+                    
                 }
             })
         });
