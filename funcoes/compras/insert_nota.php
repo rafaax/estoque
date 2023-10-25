@@ -21,7 +21,7 @@ function validaRegistro($id){
     }
 
 }
-file_put_contents('contentlenght.txt', $_SERVER['CONTENT_LENGTH']);
+// file_put_contents('contentlenght.txt', $_SERVER['CONTENT_LENGTH']);
 
 if($_SERVER['CONTENT_LENGTH'] > 84313071){
     echo json_encode(

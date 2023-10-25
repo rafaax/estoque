@@ -182,12 +182,14 @@ function nomeMes($num){
 
             foreach($arrAno as $array){
                 echo "<optgroup label='$array'>";
-                $sqlforeach = "SELECT month(data_compra) as mes_compra from compras where year(data_compra) = '$array' order by data_compra desc";
+                $sqlforeach = "SELECT month(data_compra) as mes_compra from compras where year(data_compra) = '$array' group by month(data_compra) order by data_compra desc";
                 $query = mysqli_query($conexao, $sqlforeach);
                 while($mes = mysqli_fetch_array($query)){
+                    
                     $mes_compra = $mes['mes_compra'];
                     $nome = nomeMes($mes_compra);
                     echo "<option value='$array-$mes_compra'> $nome </option>";
+
                 }
                 echo '</optgroup>';
             }
