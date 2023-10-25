@@ -162,7 +162,7 @@
         <?php if($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['retirado'])){
             ?> load_retirar(<?=$_GET['retirado']?>)<?php
         }else if($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['res']) && isset($_GET['value']) && $_GET['res'] == true){
-            ?>load_retirar_pos_res(<?=$_GET['value']?>); <?php
+            ?>load_retirar_pos_res(<?=$_GET['value']?>);<?php
         }
         else if($_SERVER['REQUEST_METHOD'] === 'GET'){
             ?> load_table();<?php

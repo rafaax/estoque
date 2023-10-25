@@ -155,7 +155,7 @@
                                                 <i class="zmdi zmdi-chart"></i>
                                             </div>
                                             <div class="text">
-                                                <h2>Gráficos</h2>
+                                                <h2>Gráficos EM BREVE</h2>
                                                 <span>visualize os gráficos</span>
                                             </div>
                                         </div>
