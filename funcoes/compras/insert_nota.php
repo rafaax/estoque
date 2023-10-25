@@ -21,6 +21,22 @@ function validaRegistro($id){
     }
 
 }
+
+function getPath($compra_id){
+    require '../../conexao.php';
+
+    $sql = "select path from notas_fiscais where compra_id = $compra_id";
+    $query = mysqli_query($conexao, $sql);
+    $array = mysqli_fetch_array($query);
+
+    return $array['path'];
+}
+
+function delPath($path){
+    if(file_exists('../../' .$path)){
+        unlink('../../'.$path);
+    }
+}
 // file_put_contents('contentlenght.txt', $_SERVER['CONTENT_LENGTH']);
 
 if($_SERVER['CONTENT_LENGTH'] > 84313071){
@@ -66,8 +82,13 @@ if(isset($_FILES['file-input'])){
     
 
     if(validaRegistro($idCompra)){
+        
+        $atualpath = getPath($idCompra);
+        delPath($atualpath);
+
         $sql = "UPDATE notas_fiscais set path = '$path' where compra_id = $idCompra";
         $query = mysqli_query($conexao, $sql);
+
     }else{
         $sql = "INSERT INTO notas_fiscais(path, compra_id)  values ('$path','$idCompra')";
         $query = mysqli_query($conexao, $sql);
