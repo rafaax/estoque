@@ -34,6 +34,24 @@
 
 </head>
 
+<style>
+.colored-toast.swal2-icon-success {
+  background-color: #a5dc86 !important;
+}
+
+.colored-toast .swal2-title {
+  color: white;
+}
+
+.colored-toast .swal2-close {
+  color: white;
+}
+
+.colored-toast .swal2-html-container {
+  color: white;
+}
+</style>
+
 <body class="animsition">
     <div class="page-wrapper">
         <?php require 'subtelas/header-mobile.php';?>
@@ -53,7 +71,7 @@
                                 <div class="table-data__tool">
                                     <div class="table-data__tool-left">
                                         <div class="form-header">
-                                            <input class="au-input au-input--xl" type="text" name="search" id="searchEstoque" placeholder="Procure uma compra" />
+                                            <input class="au-input au-input--xl" type="text" name="search" id="searchRetirada" placeholder="Procure uma compra" />
                                             <button class="au-btn--submit" id="buttonClear">
                                                 <i class="zmdi zmdi-close"></i>
                                             </button>
@@ -105,6 +123,111 @@
 
     listarRegistros(1);
 
+     const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-right',
+        iconColor: 'white',
+        customClass: {
+            popup: 'colored-toast'
+        },
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true
+    })
+
+    function devolverParcela(id, quantidade){
+        Swal.fire({
+            title: 'Alerta',
+            text: "Você realmente deseja devolver?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sim',
+            cancelButtonText: 'Não!',
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Quanto você deseja devolver?',
+                    input: 'number',
+                    inputAttributes: {
+                        autocapitalize: 'off',
+                        min: 1,
+                        max: quantidade
+                    },
+                    showCancelButton: true,
+                    showLoaderOnConfirm: true,
+                    confirmButtonText: 'Devolver',
+                    cancelButtonText: 'Não!',
+                    
+                    preConfirm: (qt) => {
+                        const arrayPost = {
+                            id: id, qt: qt 
+                        };
+
+                        const requestOptions = {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(arrayPost),
+                        };
+
+                        return fetch('funcoes/retirada/backend_devolucao.php', requestOptions)
+                        .then(response => {
+                            if (!response.ok) {
+                            throw new Error(response.statusText)
+                            }
+                            return response.json()
+                        })
+                        .then(data => {
+                            console.log(data);
+                            
+                            if(data.erro === false){
+                                Toast.fire({
+                                    icon: 'success',
+                                    title: 'Devolução recebida.'
+                                })
+                                listarRegistros(1);    
+                            }else if(data.erro === true){
+                                Swal.fire({
+                                    title: json.msg,
+                                    icon: 'error',
+                                    allowOutsideClick: () => {
+                                        const popup = Swal.getPopup()
+                                        popup.classList.remove('swal2-show')
+                                        setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                        })
+                                        setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                        }, 500)
+                                        return false
+                                    }
+                                })
+                            }
+                        
+                        })
+                    },
+                    allowOutsideClick: () => !Swal.isLoading()
+                    }).then((result) => {
+                        
+                    })
+            }
+        })
+    }
+
 
     $(document).ready(function(){
 	
@@ -114,6 +237,9 @@
             ?> load_table();<?php
         }
         ?>
+        
+       
+
         
 
         function load_table(query){
@@ -128,10 +254,25 @@
             });
         }
 
+        $('.au-input--xl').on('keyup', function() {
+            var search = $(this).val();
+        
+            if(search != ''){
+                load_table(search);
+            }
+            else{
+                load_table();			
+            }
+            
+        });
+
+        $('#buttonClear').on('click', function() {
+            $('#searchRetirada').val('');
+            load_table();	
+        });
+
+        
 
     }); // fecha document ready
     
-
-
-
 </script>
