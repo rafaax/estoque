@@ -198,21 +198,21 @@ $query = mysqli_query($conexao, $sql);
     <div class="center">
         <div class="pagination">
             
-            <a href="#" class="page-link" onclick="listarUsuarios(1)">&laquo;</a>
+            <a href="#" class="page-link" onclick="listarRegistros(1)">&laquo;</a>
             <?php 
             for($pag_ant = $pagina - $max_links; $pag_ant <= $pagina - 1; $pag_ant++){
                 if($pag_ant >= 1){
-                    echo "<a class='page-link' href='#' onclick='listarUsuarios($pag_ant)' >$pag_ant</a>";
+                    echo "<a class='page-link' href='#' onclick='listarRegistros($pag_ant)' >$pag_ant</a>";
                 }        
             }
             echo "<a class='page-link active' href='#'>$pagina</a>";
 
             for($pag_dep = $pagina + 1; $pag_dep <= $pagina + $max_links; $pag_dep++){
                 if($pag_dep <= $quantidade_pg){
-                    echo "<a class='page-link' href='#' onclick='listarUsuarios($pag_dep)'>$pag_dep</a>";
+                    echo "<a class='page-link' href='#' onclick='listarRegistros($pag_dep)'>$pag_dep</a>";
                 }        
             }
-            echo "<a href='#' class='page-link' onclick='listarUsuarios($quantidade_pg)'>&raquo;</a>";
+            echo "<a href='#' class='page-link' onclick='listarRegistros($quantidade_pg)'>&raquo;</a>";
         
         ?>
         </div>

@@ -95,10 +95,10 @@
 
 <script type="text/javascript">
 
-    const tabela = document.querySelector("#tabela_recebidos");
+    const tabela = document.querySelector("#tabela_retirados");
 
     const listarRegistros = async (pagina) => {
-        const dados = await fetch("funcoes/recebidos/tabela_recebidos.php?pagina=" + pagina);
+        const dados = await fetch("funcoes/retirada/tabela_retirados.php?pagina=" + pagina);
         const resposta = await dados.text();
         tabela.innerHTML = resposta;
     }
@@ -123,9 +123,7 @@
                 data:{query:query},
                 success:function(data)
                 {
-                    // renderizar a tabela e os elementos
                     $('#tabela_retirados').html(data); 
-                    //
                 }
             });
         }
