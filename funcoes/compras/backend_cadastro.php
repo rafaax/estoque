@@ -84,9 +84,9 @@ function jsonEcho($msg){
 
 function validaFormato($tipo){
     if($tipo == 'pagamento_presencial'){
-        return 1;
-    }else if($tipo == 'pagamento_remoto'){
         return 0;
+    }else if($tipo == 'pagamento_remoto'){
+        return 1;
     }
 }
 

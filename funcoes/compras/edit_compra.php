@@ -231,13 +231,7 @@ $id =  $_POST['id'];
                     aria-required="true" aria-invalid="false" placeholder="Site que foi comprado" value="<?=$site?>"> 
                 </div>
             <?php }?>
-
-            <div class="form-group">
-                <label for="descricao" class=" form-control-label">Descrição</label>
-                <textarea name="descricao" id="descricao" rows="5" placeholder="Descricao do produto..." class="form-control" 
-                value="<?=$descricao?>"></textarea>
-            </div>
-
+            
             <div class="row">
                 <div class="col-6">
                     <div class="form-group">

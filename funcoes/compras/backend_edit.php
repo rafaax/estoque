@@ -59,11 +59,11 @@ function getUnidade($unidade){
 }
 
 function update($id, $nome, $partnumber, $quantidade, $unidade, $solicitante, $fornecedor,
-$categoria, $pagamento, $parcelas, $preco_unitario, $frete, $imposto, $site, $descricao, $data_compra, $previsao_entrega ){
+$categoria, $pagamento, $parcelas, $preco_unitario, $frete, $imposto, $site, $data_compra, $previsao_entrega ){
     require '../../conexao.php';
 
     $sqlupdate = "UPDATE compras set nome = '$nome', partnumber = '$partnumber', quantidade =  '$quantidade', site = '$site', 
-    valor_unitario = '$preco_unitario', frete = '$frete', imposto = '$imposto', parcelas = '$parcelas', descricao = '$descricao',
+    valor_unitario = '$preco_unitario', frete = '$frete', imposto = '$imposto', parcelas = '$parcelas',
     data_compra = '$data_compra', previsao_entrega = '$previsao_entrega', pagamento_id = '$pagamento', categoria_id = '$categoria', 
     fornecedor_id = '$fornecedor', solicitante_id = '$solicitante', unidade_id = '$unidade' where id = $id";
 
@@ -120,12 +120,21 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' ){
         $pagamento = $dados['pagamento'];
         $parcelas = $dados['parcelas'];
         $preco_unitario = str_replace(',', '.', $dados['preco_unitario']); 
-        $frete = str_replace(',', '.', $dados['frete']);
-        $imposto = str_replace(',', '.', $dados['imposto']);
-        $site = $dados['site'];
-        $descricao = $dados['descricao'];
+        if(isset($dados['frete']) && isset($dados['imposto']) 
+            && isset($dados['site']) && isset($dados['previsao_entrega'])){
+            $frete = str_replace(',', '.', $dados['frete']);
+            $imposto = str_replace(',', '.', $dados['imposto']);
+            $site = $dados['site'];
+            $previsao_entrega = $dados['previsao_entrega'];
+        }else{
+            $frete = NULL;
+            $imposto = NULL;
+            $site = NULL;
+            $previsao_entrega = NULL;
+        }
+        
         $data_compra = $dados['data_compra'];
-        $previsao_entrega = $dados['previsao_entrega'];
+        
         
         $unidade_id = getUnidade($unidade);
         $solicitante_id = getSolicitante($solicitante);
@@ -134,7 +143,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' ){
         $categoria_id = getCategoria($categoria);
 
         
-        if(update($id_produto, $nome, $partnumber, $quantidade, $unidade_id, $solicitante_id, $fornecedor_id, $categoria_id,$pagamento_id, $parcelas,$preco_unitario ,$frete, $imposto, $site, $descricao, $data_compra, $previsao_entrega)){
+        if(update($id_produto, $nome, $partnumber, $quantidade, $unidade_id, $solicitante_id, $fornecedor_id, $categoria_id,$pagamento_id, $parcelas,$preco_unitario ,$frete, $imposto, $site, $data_compra, $previsao_entrega)){
             logEdit($userSession, $nome);
             jsonEcho('Atualizado com sucesso!');
             exit();
