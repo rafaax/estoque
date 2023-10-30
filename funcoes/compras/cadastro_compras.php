@@ -158,14 +158,14 @@ require '../../conexao.php';
                     <div class="col-6">
                         <div class="form-group">
                             <label for="frete" class="control-label mb-1">Frete</label>
-                            <input id="frete" name="frete" type="number" class="form-control" min="0"
+                            <input id="frete" name="frete" type="text" class="form-control" min="0"
                             placeholder="Digite o valor do frete">
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="form-group">
                             <label for="imposto" class="control-label mb-1">Imposto</label>
-                            <input id="imposto" name="imposto" type="number" class="form-control"  min="0"
+                            <input id="imposto" name="imposto" type="text" class="form-control"  min="0"
                             placeholder="Digite o valor do imposto">
                         </div>
                     </div>
@@ -254,6 +254,26 @@ $(document).ready(function(){
     });
 
     $('#preco_unitario').on('input', function(){
+
+        var text = $(this).val();
+        var newText = text.replace(/[^0-9,]/g, '');
+
+        
+        $(this).val(newText);
+
+    })
+    
+    $('#frete').on('input', function(){
+
+        var text = $(this).val();
+        var newText = text.replace(/[^0-9,]/g, '');
+
+        
+        $(this).val(newText);
+
+    })
+
+    $('#imposto').on('input', function(){
 
         var text = $(this).val();
         var newText = text.replace(/[^0-9,]/g, '');
