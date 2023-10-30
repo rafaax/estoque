@@ -119,9 +119,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' ){
         $categoria =$dados['categoria'];
         $pagamento = $dados['pagamento'];
         $parcelas = $dados['parcelas'];
-        $preco_unitario = $dados['preco_unitario'];
-        $frete = $dados['frete'];
-        $imposto = $dados['imposto'];
+        $preco_unitario = str_replace(',', '.', $dados['preco_unitario']); 
+        $frete = str_replace(',', '.', $dados['frete']);
+        $imposto = str_replace(',', '.', $dados['imposto']);
         $site = $dados['site'];
         $descricao = $dados['descricao'];
         $data_compra = $dados['data_compra'];

@@ -200,7 +200,7 @@ $id =  $_POST['id'];
             
             <div class="form-group">
                 <label for="preco_unitario" class="control-label mb-1">Preço unitário</label>
-                <input id="preco_unitario" name="preco_unitario" type="number" class="form-control" min="0"
+                <input id="preco_unitario" name="preco_unitario" type="text" class="form-control" min="0"
                 placeholder="Digite o preço unitário do produto" value="<?=$valor_unitario?>">
             </div>
 
@@ -213,14 +213,14 @@ $id =  $_POST['id'];
                     <div class="col-6">
                         <div class="form-group">
                             <label for="frete" class="control-label mb-1">Frete</label>
-                            <input id="frete" name="frete" type="number" class="form-control" min="0"
+                            <input id="frete" name="frete" type="text" class="form-control" min="0"
                             placeholder="Digite o valor do frete" value="<?=$frete?>">
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="form-group">
                             <label for="imposto" class="control-label mb-1">Imposto</label>
-                            <input id="imposto" name="imposto" type="number" class="form-control"  min="0"
+                            <input id="imposto" name="imposto" type="text" class="form-control"  min="0"
                             placeholder="Digite o valor do imposto" value="<?=$imposto?>">
                         </div>
                     </div>
@@ -315,6 +315,36 @@ $(document).ready(function(){
             y.style.display = 'none';
         }
     });
+
+    $('#preco_unitario').on('input', function(){
+
+        var text = $(this).val();
+        var newText = text.replace(/[^0-9,]/g, '');
+
+        
+        $(this).val(newText);
+
+    })
+    
+    $('#frete').on('input', function(){
+
+        var text = $(this).val();
+        var newText = text.replace(/[^0-9,]/g, '');
+
+        
+        $(this).val(newText);
+
+    })
+
+    $('#imposto').on('input', function(){
+
+        var text = $(this).val();
+        var newText = text.replace(/[^0-9,]/g, '');
+
+        
+        $(this).val(newText);
+
+    })
 
     $('#form_edit').on("submit", function(event){
         event.preventDefault();

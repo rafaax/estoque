@@ -94,7 +94,7 @@ function validaFormato($tipo){
 if($_SERVER['REQUEST_METHOD'] == 'POST' ){
     $dados = filter_input_array(INPUT_POST, FILTER_DEFAULT);
     $json = json_encode($dados);
-    // file_put_contents('dados.json', $json);
+    file_put_contents('dados.json', $json);
     
     if(@$json){
         
@@ -108,9 +108,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' ){
         $pagamento = $dados['pagamento'];
         $parcelas = $dados['parcelas']; 
         $pagamento_formato = $dados['pagamento_formato'];
-        $preco_unitario = $dados['preco_unitario']; 
-        $frete = $dados['frete'];
-        $imposto = $dados['imposto']; 
+        $preco_unitario = str_replace(',', '.', $dados['preco_unitario']); 
+        $frete = str_replace(',', '.', $dados['frete']);
+        $imposto = str_replace(',', '.', $dados['imposto']); 
         $site = $dados['site']; 
         $descricao = $dados['descricao']; 
         $data_compra = $dados['data_compra']; 
