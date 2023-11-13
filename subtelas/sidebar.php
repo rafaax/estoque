@@ -143,6 +143,8 @@
             var liRecebidos = document.getElementsByClassName('recebidos')[0];
             var liEstoque = document.getElementsByClassName('estoque')[0];
             var liRetirada = document.getElementsByClassName('retirada')[0];
+
+            // console.log(currentPath);
             
             if(currentPath === '/estoque_git/index' || currentPath === '/estoque_git/index.php' || currentPath === '/estoque_git/'){
                 liIndex.classList.add('active');
@@ -156,7 +158,7 @@
                 liPagamentos.classList.add('active');
             }else if(currentPath === '/estoque_git/compras' || currentPath === '/estoque_git/compras.php'){
                 liCompras.classList.add('active');
-            }else if(currentPath === '/estoque_git/recebido' || currentPath === '/estoque_git/recebidos.php'){
+            }else if(currentPath === '/estoque_git/recebidos' || currentPath === '/estoque_git/recebidos.php'){
                 liRecebidos.classList.add('active');
             }else if(currentPath === '/estoque_git/estoque' || currentPath === '/estoque_git/estoque.php'){
                 liEstoque.classList.add('active');

@@ -187,7 +187,7 @@ $query = mysqli_query($conexao, $sql);
     </table>
     <?php
     
-    $query_pg = "SELECT COUNT(id) AS num_result FROM compras";
+    $query_pg = "SELECT COUNT(id) AS num_result FROM estoque";
     $result_pg = mysqli_query($conexao, $query_pg);
     $row_pg = mysqli_fetch_assoc($result_pg);
 
