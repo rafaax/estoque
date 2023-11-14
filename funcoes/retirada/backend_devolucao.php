@@ -17,6 +17,16 @@ function jsonEchoErr($msg){
     ));
 }
 
+
+function logDevolucao($user, $target){
+    require '../../conexao.php';
+
+    $sql = "insert into logs(usuario, mensagem, target) values('$user', 'Devolucao', '$target')";
+    $query = mysqli_query($conexao, $sql);
+
+    return $query ? true : false;
+}
+
 if($_SERVER['REQUEST_METHOD'] == 'POST' ){
     
     $dados = json_decode(file_get_contents('php://input'), true);
@@ -56,6 +66,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' ){
             $sql = "update estoque set quantidade = $update where id = $id_estoque";
             $query = mysqli_query($conexao, $sql);
             if($query){
+                logDevolucao($userSession, $id_estoque);
                 jsonEcho('Quantidade devolvida com sucesso!');
             }
         }else{

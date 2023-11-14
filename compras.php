@@ -274,8 +274,7 @@ function nomeMes($num){
             });
         }
         
-        function load_cadastro(query)
-        {
+        function load_cadastro(query){
             $.ajax(
                 {
                     url:"funcoes/compras/cadastro_compras.php",
