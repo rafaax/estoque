@@ -220,7 +220,6 @@ $(document).ready(function(){
                 dataType:"json",
                 success:function(data){
                     result($.map(data, function(item){
-
                         return item;
                     }));
                 }
