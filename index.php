@@ -1,4 +1,5 @@
 <?php require_once 'get_dados.php';?>
+<?php include_once 'funcoes/rotinas/rotina_rastreador.php';?>
 <!DOCTYPE html>
 <html lang="pt-br">
 

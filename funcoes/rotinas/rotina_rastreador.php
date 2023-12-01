@@ -1,8 +1,9 @@
 <?php
 
 function postCurl($data){
-
-    $url = "../emails/email_falta_rast.php";
+    // echo $data;
+    
+    $url = "127.0.0.1/estoque_git/funcoes/emails/email_falta_rast.php";
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POST, true);
@@ -11,8 +12,10 @@ function postCurl($data){
         'Content-Type: application/json'
     ));
 
-    curl_exec($ch);
+    $response = curl_exec($ch);
+
     curl_close($ch);
+    // echo $response;
 }
 
 $conexao = mysqli_connect('localhost', 'root', '', 'vetorsys');
@@ -23,7 +26,6 @@ $array = mysqli_fetch_array($query);
 
 $quantidade_estoque = $array['quantidade_total'];
 
-
 $sql = "select * from rotinas where type = 'Rastreador'";
 $query = mysqli_query($conexao, $sql);
 $array = mysqli_fetch_array($query);
@@ -32,7 +34,7 @@ if($array['quantidade'] != $quantidade_estoque){
     if($quantidade_estoque <= 5){
         $post = array(
             'valor' => $quantidade_estoque,
-            'tolerancia' => $array['e.tolerancia']
+            'tolerancia' => $array['tolerancia']
         );
         $json = json_encode($post);
         postCurl($json);

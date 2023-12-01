@@ -1,8 +1,9 @@
 <?php 
-require 'vendor/autoload.php';
-require 'vendor/phpmailer/phpmailer/src/Exception.php';
-require 'vendor/phpmailer/phpmailer/src/PHPMailer.php';
-require 'vendor/phpmailer/phpmailer/src/SMTP.php';
+require '../../conexao.php';
+require '../../vendor/autoload.php';
+require '../../vendor/phpmailer/phpmailer/src/Exception.php';
+require '../../vendor/phpmailer/phpmailer/src/PHPMailer.php';
+require '../../vendor/phpmailer/phpmailer/src/SMTP.php';
 
 date_default_timezone_set('America/Sao_Paulo');
 use PHPMailer\PHPMailer\PHPMailer;
@@ -10,8 +11,30 @@ use PHPMailer\PHPMailer\PHPMailer;
 if(getenv('REQUEST_METHOD') == 'POST') {
     
     $client_data = file_get_contents("php://input");
+    // echo $client_data;
     $json = json_decode($client_data);
-     
+    // print_r($json);
+    file_put_contents('post.json', json_encode($json));
+    
+    $sql = "select * from usuario where nivel = 1";
+    $query = mysqli_query($conexao, $sql);
+    $users = array();
+    while($array = mysqli_fetch_array($query)){ 
+        $email = $array['email'];
+        $nome = $array['nome'];
+        $sobrenome = $array['sobrenome'];
+        array_push($users, array(
+            'email' => $email,
+            'nome' =>$nome,
+            'sobrenome'=>$sobrenome
+        ));
+    }
+    // print_r($users);
+
+    foreach($users as $user){
+        print_r($user);
+    }
+    /*
     $mail = new PHPMailer();
 
     $mail->CharSet = "UTF-8";
@@ -74,6 +97,6 @@ if(getenv('REQUEST_METHOD') == 'POST') {
     } else {
         echo 'Mensagem enviada.';
     }
-
+    */
 }
 ?>
