@@ -118,6 +118,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' ){
                 logRetirada($userSession, $id_produto);
                 retiraEstoque($id_produto, $quantidade_retirada);
                 jsonEcho('Retirado com sucesso!');
+                include_once '../rotinas/rotina_chip.php';
+                include_once '../rotinas/rotina_rastreador.php';
             }else{
                 jsonEchoErro('Ocorreu algum erro...');
             }

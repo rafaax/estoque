@@ -1,4 +1,8 @@
-<?php require_once 'get_dados.php';?>
+<?php require_once 'get_dados.php';
+// include_once 'funcoes/rotinas/rotina_rastreador.php';
+// include_once 'funcoes/rotinas/rotina_chip.php';
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 

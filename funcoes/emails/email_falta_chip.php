@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 require '../../conexao.php';
 require '../../vendor/autoload.php';
 require '../../vendor/phpmailer/phpmailer/src/Exception.php';
@@ -9,11 +10,12 @@ date_default_timezone_set('America/Sao_Paulo');
 use PHPMailer\PHPMailer\PHPMailer;
 
 if(getenv('REQUEST_METHOD') == 'POST') {
+    
     require 'smtp.php';
 
     $client_data = file_get_contents("php://input");
     $json = json_decode($client_data);
-    file_put_contents('post_rast.json', json_encode($json));
+    file_put_contents('post_chip.json', json_encode($json));
 
     $valor = $json->valor;
     $tolerancia = $json->tolerancia;
@@ -56,14 +58,14 @@ if(getenv('REQUEST_METHOD') == 'POST') {
         $mail->Subject = 'Estoque Vetorian';
         $conexao = mysqli_connect('engedoc.com.br', 'engedoc', '3Ng3d0c!', 'calendario');
 
-        $sql = "SELECT html from email_template where tipo = 'FALTA_RASTREADOR'";
+        $sql = "SELECT html from email_template where tipo = 'FALTA_CHIP'";
         $query = mysqli_query($conexao, $sql);
         $array = mysqli_fetch_assoc($query);
         $body = $array['html'];
         
 
         $arrayHtml = array(
-                    "%content%" => "Rastreadores no estoque: <strong> $valor </strong>",
+                    "%content%" => "Chips no estoque: <strong> $valor </strong>",
                     "%content2%" => "Mínimo recomendado no estoque: <strong>$tolerancia</strong>",
                 );
 

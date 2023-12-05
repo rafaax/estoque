@@ -68,6 +68,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' ){
             if($query){
                 logDevolucao($userSession, $id_estoque);
                 jsonEcho('Quantidade devolvida com sucesso!');
+                include_once '../rotinas/rotina_chip.php';
+                include_once '../rotinas/rotina_rastreador.php';
             }
         }else{
             jsonEchoErr('Ocorreu algum erro...');
