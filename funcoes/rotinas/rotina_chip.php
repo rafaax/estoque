@@ -27,7 +27,7 @@ function updateRotina_chip($quantidade, $tipo){
 
 $conexao = mysqli_connect('localhost', 'root', '', 'vetorsys');
 // rotina st310 
-$sql = "select sum(e.quantidade) as quantidade_total, c.partnumber from estoque e inner join compras c on c.id = e.compra_id where c.partnumber in ('CPM20MB')";
+$sql = "select sum(e.quantidade) as quantidade_total, c.partnumber from estoque e inner join compras c on c.id = e.compra_id where c.partnumber in ('CPM20MB', 'CPM10MB')";
 $query = mysqli_query($conexao, $sql);
 $array = mysqli_fetch_array($query);
 
