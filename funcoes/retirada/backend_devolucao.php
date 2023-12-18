@@ -62,7 +62,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' ){
         $query = mysqli_query($conexao, $sql);
 
         if($query){
-            $update = $quantidade_estoque + $quantidade_devolvida;
+            $update = $quantidade_estoque + $quantidade_devolvida + $quantidade;
             $sql = "update estoque set quantidade = $update where id = $id_estoque";
             $query = mysqli_query($conexao, $sql);
             if($query){
