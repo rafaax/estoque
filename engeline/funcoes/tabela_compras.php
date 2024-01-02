@@ -206,7 +206,7 @@ $inicio = ($pagina * $quantidade_por_pagina) - $quantidade_por_pagina;
                                     <label class="col-sm-2 col-form-label"><strong>Previsão Entrega:</strong></label>
                                     <?php
                                     
-                                    if($previsao_entrega == '0000-00-00'){
+                                    if($previsao_entrega == '0000-00-00' || $previsao_entrega == NULL){
                                         echo 'Não foi inserido uma previsão de entrega';
                                     }else{
                                         echo date('d/m/Y',strtotime($previsao_entrega));
