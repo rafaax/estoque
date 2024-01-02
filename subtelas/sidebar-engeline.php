@@ -1,7 +1,7 @@
 <aside class="menu-sidebar d-none d-lg-block">
             <div class="logo">
-                <a href="index">
-                    <img src="../images/icon/Logo-Vetorian-Horizontal-Color.png" alt="vetorian" />
+                <a href="../index">
+                    <img src="../images/icon/engeline_logo.png" alt="engedoc" />
                 </a>
             </div>
             <div class="menu-sidebar__content js-scrollbar1">
