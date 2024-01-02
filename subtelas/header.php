@@ -35,6 +35,10 @@
                                                     <a href="account.php">
                                                         <i class="zmdi zmdi-account"></i>Conta</a>
                                                 </div>
+                                                <div class="account-dropdown__item">
+                                                    <a href="engeline/compras.php">
+                                                        <i class="zmdi zmdi-account"></i>Trocar para sistema engeline</a>
+                                                </div>
                                             </div>
                                             <div class="account-dropdown__footer">
                                                 <a href="validacao/logout.php">
