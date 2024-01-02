@@ -42,7 +42,6 @@ $inicio = ($pagina * $quantidade_por_pagina) - $quantidade_por_pagina;
                 <th>Nome</th>
                 <th>PartNumber</th>
                 <th>Data da Compra</th>
-                <th>Status</th>
                 <th>Preço total</th>
                 <th></th>
             </tr>
@@ -145,12 +144,6 @@ $inicio = ($pagina * $quantidade_por_pagina) - $quantidade_por_pagina;
                     echo "<td data-toggle='modal' data-target='#myModal-$id'> $nome </td>";
                     echo "<td data-toggle='modal' data-target='#myModal-$id'> $partnumber </td>";
                     echo "<td data-toggle='modal' data-target='#myModal-$id'> $data_compra </td>";
-                    if($status == 'Ainda não entregue' || $status == 'Atrasado'){
-                        echo "<td class='bg-danger text-white' data-toggle='modal' data-target='#myModal-$id'> $status </td>";    
-                    }else{
-                        echo "<td data-toggle='modal' data-target='#myModal-$id'> $status </td>";
-                    }
-                    
                     echo '<td> R$'. number_format($preco_total, 2, ',', '.').'</td>';
                     ?><td>
                             <div class="table-data-feature">
