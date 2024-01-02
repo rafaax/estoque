@@ -164,8 +164,9 @@ function nomeMes($num){
                                                     <div class="rs-select2--dark rs-select2--md rs-select2--dark2">
                                                         <select class="js-example-basic-single" id="datafilter">
                                                             <option></option>';
+
             $sql = "SELECT year(data_compra) as ano, month(data_compra) as mes from compras 
-                where data_compra is not null group by year(data_compra), month(data_compra) order by data_compra desc";
+                where engeline = 1 and data_compra is not null  group by year(data_compra), month(data_compra) order by data_compra desc";
             $query = mysqli_query($conexao, $sql);
             $arrAno = array();
             while($array = mysqli_fetch_array($query)){
@@ -178,7 +179,7 @@ function nomeMes($num){
 
             foreach($arrAno as $array){
                 echo "<optgroup label='$array'>";
-                $sqlforeach = "SELECT month(data_compra) as mes_compra from compras where year(data_compra) = '$array' group by month(data_compra) order by data_compra desc";
+                $sqlforeach = "SELECT month(data_compra) as mes_compra from compras where year(data_compra) = '$array' and engeline = 1 group by month(data_compra) order by data_compra desc";
                 $query = mysqli_query($conexao, $sqlforeach);
                 while($mes = mysqli_fetch_array($query)){
                     
@@ -257,7 +258,7 @@ function nomeMes($num){
 
         function data_filter(month){
             $.ajax({
-                url:"../funcoes/compras/tabela_compras.php",
+                url:"funcoes/tabela_compras.php",
                 method:"post",
                 data:{filter:month},
                 success:function(data)
@@ -272,7 +273,7 @@ function nomeMes($num){
         function load_cadastro(query){
             $.ajax(
                 {
-                    url:"../funcoes/compras/cadastro_compras.php",
+                    url:"funcoes/cadastro_compras.php",
                     method:"post",
                     data:{query:query},
                     success:function(data)
@@ -290,7 +291,7 @@ function nomeMes($num){
         {
             $.ajax(
                 {
-                    url:"../funcoes/compras/tabela_compras.php",
+                    url:"funcoes/tabela_compras.php",
                     method:"post",
                     data:{query:query},
                     success:function(data)
@@ -365,7 +366,7 @@ function nomeMes($num){
                     event.preventDefault();
                     $.ajax({
                         method: "POST",
-                        url: "../funcoes/compras/insert_nota.php?id=<?=$_GET['nota']?>",
+                        url: "funcoes/insert_nota.php?id=<?=$_GET['nota']?>",
                         data: new FormData(this),
                         contentType: false,
                         processData: false,
@@ -428,7 +429,7 @@ function nomeMes($num){
         const tabela = document.querySelector("#tabela_compras");
 
         const listarUsuarios = async (pagina) => {
-            const dados = await fetch("../funcoes/compras/tabela_compras.php?pagina=" + pagina);
+            const dados = await fetch("funcoes/tabela_compras.php?pagina=" + pagina);
             const resposta = await dados.text();
             tabela.innerHTML = resposta;
         }
@@ -470,7 +471,7 @@ function nomeMes($num){
                         body: JSON.stringify(arrayPost),
                     };
                     console.log(arrayPost);
-                    return fetch('../funcoes/compras/delete_compra.php', requestOptions)
+                    return fetch('funcoes/delete_compra.php', requestOptions)
                     .then(response => {
                             
                             if (!response.ok) {
