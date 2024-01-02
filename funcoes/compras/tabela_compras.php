@@ -63,9 +63,9 @@ $inicio = ($pagina * $quantidade_por_pagina) - $quantidade_por_pagina;
                     (SELECT nome FROM integrantes WHERE id = e.recebido_id) AS recebido_id,
                     IFNULL((SELECT data_entrega FROM recebidos WHERE compra_id = e.id), 0) AS ifnullresult
                     FROM compras e
-                    WHERE categoria_id = (SELECT id FROM categoria WHERE nome LIKE '%$search%' LIMIT 1)
+                    WHERE engeline = 0 and (categoria_id = (SELECT id FROM categoria WHERE nome LIKE '%$search%' LIMIT 1)
                     or  nome LIKE '%$search%' 
-                    OR partnumber LIKE '%$search%' order by data_compra desc
+                    OR partnumber LIKE '%$search%') order by data_compra desc
                 ";
             }else if(isset($_POST["filter"])){
                 
@@ -81,7 +81,7 @@ $inicio = ($pagina * $quantidade_por_pagina) - $quantidade_por_pagina;
                     (SELECT nome FROM integrantes WHERE id = e.recebido_id) AS recebido_id,
                     IFNULL((SELECT data_entrega FROM recebidos WHERE compra_id = e.id), 0) AS ifnullresult
                     
-                    FROM compras e where year(data_compra) = '$ano' and month(data_compra) = '$mes' 
+                    FROM compras e where engeline = 0 and  (year(data_compra) = '$ano' and month(data_compra) = '$mes') 
                     order by data_compra desc limit $inicio, $quantidade_por_pagina ";
 
             }
@@ -97,7 +97,7 @@ $inicio = ($pagina * $quantidade_por_pagina) - $quantidade_por_pagina;
                     (SELECT nome FROM integrantes WHERE id = e.recebido_id) AS recebido_id,
                     IFNULL((SELECT data_entrega FROM recebidos WHERE compra_id = e.id), 0) AS ifnullresult
                     
-                    FROM compras e order by data_compra desc limit $inicio, $quantidade_por_pagina ";
+                    FROM compras e where engeline = 0 order by data_compra desc limit $inicio, $quantidade_por_pagina ";
             }
 
             

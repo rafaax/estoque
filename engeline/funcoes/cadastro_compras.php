@@ -215,7 +215,7 @@ $(document).ready(function(){
         source: function(query, result)
         {
             $.ajax({
-                url: "funcoes/compras/typeahead_compras.php",
+                url: "funcoes/typeahead_compras.php",
                 method: "POST",
                 data:{query:query},
                 dataType:"json",
@@ -288,7 +288,7 @@ $(document).ready(function(){
 
         $.ajax({
             method: "POST",
-            url: "funcoes/compras/backend_cadastro.php",
+            url: "funcoes/backend_cadastro.php",
             data: new FormData(this),
             contentType: false,
             processData: false,
@@ -318,7 +318,7 @@ $(document).ready(function(){
                         },
                     })
                     setTimeout(function() {
-                        window.location.href = "http://127.0.0.1/estoque_git/funcoes/compras"
+                        window.location.href = "http://127.0.0.1/estoque_git/engeline/compras"
                     }, 3000)
                 }else if(json.erro == true){
                     Swal.fire({

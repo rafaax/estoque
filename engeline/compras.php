@@ -287,8 +287,7 @@ function nomeMes($num){
         }
     
 
-        function load_compras(query)
-        {
+        function load_compras(query){
             $.ajax(
                 {
                     url:"funcoes/tabela_compras.php",
@@ -297,7 +296,7 @@ function nomeMes($num){
                     success:function(data)
                     {
                         // renderizar a tabela e os elementos
-                        $('#tabela_compras').html(data); 
+                        $('#tabela_compras').html(data);
                         //
                     }
                 }
