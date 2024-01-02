@@ -152,7 +152,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' ){
             if($insert){
                 logCadastro($userSession, $nome_produto);
                 echo json_encode(array(
-                    'erro' => false,
+                    'erro' => false
                 ));
                 exit();
             }else{

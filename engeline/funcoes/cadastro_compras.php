@@ -310,16 +310,26 @@ $(document).ready(function(){
                 Swal.close();
                 if(json.erro == false){
                     Swal.fire({
-                        title: 'Compra cadastrada!',
-                        html: 'A página se auto-reiniciará em 3 segundos.',
-                        icon: 'success',
-                        didOpen: () => {
-                            Swal.showLoading()
-                        },
-                    })
-                    setTimeout(function() {
-                        window.location.href = "http://127.0.0.1/estoque_git/engeline/compras"
-                    }, 3000)
+                            icon: 'success',
+                            title: 'Sucesso!',
+                            html: 'Fechando em <b></b>  milisegundos',
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: () => {
+                                Swal.showLoading()
+                                const b = Swal.getHtmlContainer().querySelector('b')
+                                timerInterval = setInterval(() => {
+                                b.textContent = Swal.getTimerLeft()
+                                }, 100)
+                            },
+                            willClose: () => {
+                                clearInterval(timerInterval)
+                            }
+                            }).then((result) => {
+                                if (result.dismiss === Swal.DismissReason.timer) {
+                                    window.location.href = "http://127.0.0.1/estoque_git/engeline/compras"
+                                }
+                            })
                 }else if(json.erro == true){
                     Swal.fire({
                         title: json.msg,

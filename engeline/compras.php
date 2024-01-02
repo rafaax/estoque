@@ -99,6 +99,16 @@ function nomeMes($num){
 
         }else if($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['nota'])){
         
+        $nota_id = $_GET['nota'];
+        $sql = "select path from notas_fiscais where compra_id = $nota_id limit 1";
+        $query = mysqli_query($conexao, $sql);
+
+        if(mysqli_num_rows($query) > 0){
+            $array = mysqli_fetch_array($query);
+            $path = $array['path'];
+        }
+
+        // 
         echo '
 
             <div class="main-content">
@@ -112,29 +122,78 @@ function nomeMes($num){
                                     <div class="col-lg-6">
                                     </div>
                                     <div class="col-lg-6">
+                                    ';
+                                    if(isset($path)){
+                                        echo '
                                         <div class="card">
                                             
                                             <div class="card-header">
-                                                Insira a <strong>NOTA FISCAL</strong>
+                                                Visualize <strong>NOTA FISCAL</strong>
+                                            </div>
+                                            <div class="card-body card-block">
+                                                    <div class="row form-group"> 
+                                                    <div class="col col-md-9">
+                                                            <a target="_blank" href="../'. $path. '">
+                                                                <label for="file-input" class=" form-control-label">Clique para visualizar a NF</label>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                           
+                                        </div>
+                                        <div class="card">
+                                            
+                                            <div class="card-header">
+                                                Substitua a <strong>NOTA FISCAL</strong>
                                             </div>
                                             <div class="card-body card-block">
                                                 <form id="insert_nf" method="post" enctype="multipart/form-data" class="form-horizontal">
-                                                    <div class="row form-group">
+                                                    <div class="row form-group">                                                        
                                                         <div class="col col-md-3">
                                                             <label for="file-input" class=" form-control-label">Insira a NF</label>
                                                         </div>
+
                                                         <div class="col-12 col-md-9">
                                                             <input type="file" id="file-input" name="file-input" class="form-control-file">
                                                         </div>
                                                     </div>
                                             </div>
+                                            
                                             <div class="card-footer">
                                                 <button type="submit" class="btn btn-primary btn-sm">
                                                     <i class="fa fa-dot-circle-o"></i> Confirmar
                                                 </button>
                                             </div>
                                             </form>
-                                        </div>
+                                        </div>';
+                                    }else{
+                                        echo '<div class="card">
+                                            
+                                            <div class="card-header">
+                                                Insira a <strong>NOTA FISCAL</strong>
+                                            </div>
+                                            <div class="card-body card-block">
+                                                <form id="insert_nf" method="post" enctype="multipart/form-data" class="form-horizontal">
+                                                    <div class="row form-group">                                                        
+                                                        <div class="col col-md-3">
+                                                            <label for="file-input" class=" form-control-label">Insira a NF</label>
+                                                        </div>
+
+                                                        <div class="col-12 col-md-9">
+                                                            <input type="file" id="file-input" name="file-input" class="form-control-file">
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                            
+                                            <div class="card-footer">
+                                                <button type="submit" class="btn btn-primary btn-sm">
+                                                    <i class="fa fa-dot-circle-o"></i> Confirmar
+                                                </button>
+                                            </div>
+                                            </form>
+                                        </div>';
+                                    }
+                                        echo '
                                     </div>
                             </div>
                             </div>
@@ -303,11 +362,10 @@ function nomeMes($num){
             );
         }
     
-        function load_edit(query)
-        {
+        function load_edit(query){
             $.ajax(
                 {
-                    url:"../funcoes/compras/edit_compra.php",
+                    url:"funcoes/edit_compra.php",
                     method:"post",
                     data:{id:query},
                     success:function(data)

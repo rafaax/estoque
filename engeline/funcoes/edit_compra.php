@@ -272,7 +272,7 @@ $(document).ready(function(){
         source: function(query, result)
         {
             $.ajax({
-                url: "funcoes/compras/typeahead_compras.php",
+                url: "funcoes/typeahead_compras.php",
                 method: "POST",
                 data:{query:query},
                 dataType:"json",
@@ -354,7 +354,7 @@ $(document).ready(function(){
                 if (result.isConfirmed) {
                     $.ajax({
                         method: "POST",
-                        url: "funcoes/compras/backend_edit.php",
+                        url: "funcoes/backend_edit.php",
                         data: new FormData(this),
                         contentType: false,
                         processData: false,
@@ -393,7 +393,7 @@ $(document).ready(function(){
                                 }
                                 }).then((result) => {
                                     if (result.dismiss === Swal.DismissReason.timer) {
-                                            window.location.href = "http://127.0.0.1/estoque_git/compras"
+                                            window.location.href = "http://127.0.0.1/estoque_git/engeline/compras"
                                     }
                                 })
                             }else if(json.erro == true){
