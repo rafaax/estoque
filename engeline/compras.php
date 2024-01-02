@@ -361,6 +361,9 @@ function nomeMes($num){
                 }
             );
         }
+
+
+        
     
         function load_edit(query){
             $.ajax(
@@ -492,6 +495,70 @@ function nomeMes($num){
         }
 
         listarUsuarios(1);
+        
+        function redirecionarCompra(id,nome){
+            Swal.fire
+            (
+                {
+                    title: 'Voce deseja enviar a compra ' + nome + ' para compras da Vetorian?',
+                    showDenyButton: true,
+                    confirmButtonText: 'Sim',
+                    denyButtonText: `Não`,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                }
+            ).then(
+                (result) => {
+                    if (result.isConfirmed) {
+                        const arrayPost = {
+                            id: id
+                        };
+                        const requestOptions = {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(arrayPost),
+                        };
+                        console.log(arrayPost);
+                        return fetch('funcoes/envia_vetorian.php', requestOptions)
+                        .then(response => {
+                                
+                                if (!response.ok) {
+                                throw new Error('A solicitação não foi bem-sucedida');
+                                }
+                                
+                                return response.json();
+                            })
+                            .then(data => {
+                                console.log(data);
+                                if(data.erro == false){
+                                    Swal.fire('Compra redirecionada à Vetorian.', '', 'success')
+                                    setTimeout(function() {
+                                        location.reload();
+                                    }, 1000)
+                                }else{
+                                    console.log(data);
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Erro!',
+                                        text: data.msg,
+                                    })
+                                }
+                            })
+                    }
+                }
+            )
+        }
 
         function deletaCompra(id, nome){
             Swal.fire

@@ -505,7 +505,7 @@ function nomeMes($num){
                 }
                 }
             )
-    };
+        };
     <?php } ?>
 
 function valida(path){

@@ -154,6 +154,13 @@ $inicio = ($pagina * $quantidade_por_pagina) - $quantidade_por_pagina;
                     echo '<td> R$'. number_format($preco_total, 2, ',', '.').'</td>';
                     ?><td>
                             <div class="table-data-feature">
+
+                                
+                                <button class="item" data-toggle="tooltip" data-placement="top" title="Enviar compra para vetorian"
+                                onclick="redirecionarCompra('<?=$id?>', '<?=trim($nome)?>')">
+                                    <i class="zmdi zmdi-mail-reply"></i>
+                                </button>
+
                                 <a href="compras?edit=<?=$id?>"> 
                                     <button class="item" data-toggle="tooltip" data-placement="top" title="Edit">
                                         <i class="zmdi zmdi-edit"></i>
